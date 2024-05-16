@@ -1,6 +1,7 @@
 package juego;
 
-
+import java.awt.Color;
+import java.util.random.*;
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 
@@ -11,6 +12,11 @@ public class Juego extends InterfaceJuego
 	
 	// Variables y métodos propios de cada grupo
 	// ...
+	Jugador jugador;
+	Proyectil proyectil[];
+	Enemigo enemigos[];
+	Bloque bloques[];
+	int velocidadJugador = 5;
 	
 	Juego()
 	{
@@ -19,6 +25,12 @@ public class Juego extends InterfaceJuego
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
+		this.jugador = new Jugador(400, 550);
+		this.enemigos = new Enemigo[10];
+		this.bloques = new Bloque[] {
+		new Bloque(0, 300, 800, 50, true)		
+		};
+		
 
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -34,8 +46,22 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
+		this.entorno.dibujarRectangulo(this.jugador.getX(), this.jugador.getY(), this.jugador.getAncho(), this.jugador.getAlto(), 0, Color.CYAN);
+		//this.entorno.dibujar
+		if (this.entorno.estaPresionada(this.entorno.TECLA_DERECHA)) {
+			jugador.mover(velocidadJugador);
+			
+		}
 		
-
+		if (this.entorno.estaPresionada(this.entorno.TECLA_IZQUIERDA)) {
+			jugador.mover(-velocidadJugador);
+			
+		}
+		for(int i = 0; i < bloques.length; i++) {
+			this.entorno.dibujarRectangulo(this.bloques[i].getX(), this.bloques[i].getY(), this.bloques[i].getAncho(), this.bloques[i].getAlto(), 0, Color.GREEN);
+		}
+		
+		
 	}
 	
 
