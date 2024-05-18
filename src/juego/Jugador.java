@@ -1,35 +1,37 @@
 package juego;
 
+import java.math.*;
+
 public class Jugador {
 	private int x;
 	private int y;
-	private int velocidad;
+	private int velocidadHorizontal;
+	private float velocidadVertical;
 	private int ancho;
 	private int alto;
-	private int direccion;
-	
+	private boolean mirandoDerecha = true;
 	
 	public Jugador(int x, int y) {
 		
 		this.x = x;
 		this.y = y;
-		this.velocidad = 5;
+		this.velocidadHorizontal = 5;
 		this.ancho = 32;
 		this.alto = 64;
 	}
 
-	public void mover(int velocidad) {
-		this.x += velocidad;
-		if(velocidad > 0) {
-			this.direccion = 1;
-		} else if(velocidad < 0) {
-			this.direccion = -1;
-		}
-		
+	public void moverHorizontal() 
+	{
+		this.x += this.velocidadHorizontal;
+	}
+	
+	public void moverVertical()
+	{
+		this.y += Math.ceil(this.velocidadVertical); // evitamos que el jugador no se mueva cuando 0 < velocidad vertical < 1 
 	}
 	
 	public void saltar() {
-		
+		this.velocidadVertical = -10;
 	}
 
 	public int getX() {
@@ -48,12 +50,27 @@ public class Jugador {
 		this.y = y;
 	}
 
-	public int getVelocidad() {
-		return velocidad;
+	public int getVelocidadHorizontal() {
+		return velocidadHorizontal;
 	}
 
-	public void setVelocidad(int velocidad) {
-		this.velocidad = velocidad;
+	public void setVelocidadHorizontal(int velocidad) {
+		this.velocidadHorizontal = velocidad;
+		if(velocidad > 0) {
+			this.mirandoDerecha = true;
+		} else if(velocidad < 0) {
+			this.mirandoDerecha = false;
+		}
+	}
+	
+	public float getVelocidadVertical()
+	{
+		return this.velocidadVertical;
+	}
+	
+	public void setVelocidadVertical(float velocidad)
+	{
+		this.velocidadVertical = velocidad;
 	}
 
 	public int getAncho() {
@@ -72,10 +89,18 @@ public class Jugador {
 		this.alto = alto;
 	}
 	
+	public boolean mirandoALaDerecha()
+	{
+		return mirandoDerecha;
+	}
+	
 	//public Proyectil disparar() {
 		
 	//}
 	
-	
+	public boolean saltando()
+	{
+		return this.velocidadVertical < 0;
+	}
 	
 }

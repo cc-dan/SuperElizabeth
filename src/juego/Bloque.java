@@ -39,27 +39,11 @@ public class Bloque {
 		return ancho;
 	}
 
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
 	public int getAlto() {
 		return alto;
 	}
 
-	public void setAlto(int alto) {
-		this.alto = alto;
-	}
-
-	public boolean isRompible() {
+	public boolean esRompible() {
 		return rompible;
 	}
-
-	public void setRompible(boolean rompible) {
-		this.rompible = rompible;
-	}
-	
-	
-	
-	
 }
