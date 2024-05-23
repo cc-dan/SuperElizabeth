@@ -2,22 +2,25 @@ package juego;
 
 import java.math.*;
 
-public class Jugador {
+public class Personaje {
 	private int x;
 	private int y;
 	private int velocidadHorizontal;
 	private float velocidadVertical;
 	private int ancho;
 	private int alto;
+	private boolean saltando = false;
 	private boolean mirandoDerecha = true;
+	private boolean esJugador = false;
 	
-	public Jugador(int x, int y) {
-		
+	public Personaje(int x, int y, boolean jugable) 
+	{
 		this.x = x;
 		this.y = y;
 		this.velocidadHorizontal = 5;
 		this.ancho = 32;
 		this.alto = 64;
+		this.esJugador = jugable;
 	}
 
 	public void moverHorizontal() 
@@ -77,16 +80,8 @@ public class Jugador {
 		return ancho;
 	}
 
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
 	public int getAlto() {
 		return alto;
-	}
-
-	public void setAlto(int alto) {
-		this.alto = alto;
 	}
 	
 	public boolean mirandoALaDerecha()
@@ -94,13 +89,22 @@ public class Jugador {
 		return mirandoDerecha;
 	}
 	
+	public boolean estaSaltando()
+	{
+		return this.saltando;
+	}
+	
+	public void setSaltando(boolean b)
+	{
+		this.saltando = b;
+	}
+	
+	public boolean esJugador()
+	{
+		return this.esJugador;
+	}
+	
 	//public Proyectil disparar() {
 		
 	//}
-	
-	public boolean saltando()
-	{
-		return this.velocidadVertical < 0;
-	}
-	
 }
