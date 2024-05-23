@@ -2,22 +2,31 @@ package juego;
 
 import java.math.*;
 
-public class Jugador {
+public class Personaje {
 	private int x;
 	private int y;
 	private int velocidadHorizontal;
 	private float velocidadVertical;
 	private int ancho;
 	private int alto;
+	private boolean saltando = false;
 	private boolean mirandoDerecha = true;
+<<<<<<< HEAD:src/juego/Jugador.java
 
 	public Jugador(int x, int y) {
 
+=======
+	private boolean esJugador = false;
+	
+	public Personaje(int x, int y, boolean jugable) 
+	{
+>>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 		this.x = x;
 		this.y = y;
 		this.velocidadHorizontal = 5;
 		this.ancho = 32;
 		this.alto = 64;
+		this.esJugador = jugable;
 	}
 
 	public void moverHorizontal() 
@@ -77,22 +86,23 @@ public class Jugador {
 		return ancho;
 	}
 
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
-	}
-
 	public int getAlto() {
 		return alto;
 	}
+<<<<<<< HEAD:src/juego/Jugador.java
 
 	public void setAlto(int alto) {
 		this.alto = alto;
 	}
 
+=======
+	
+>>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 	public boolean mirandoALaDerecha()
 	{
 		return mirandoDerecha;
 	}
+<<<<<<< HEAD:src/juego/Jugador.java
 
 	public Proyectil disparar() {
 
@@ -115,4 +125,25 @@ public class Jugador {
 		return this.velocidadVertical < 0;
 	}
 
+=======
+	
+	public boolean estaSaltando()
+	{
+		return this.saltando;
+	}
+	
+	public void setSaltando(boolean b)
+	{
+		this.saltando = b;
+	}
+	
+	public boolean esJugador()
+	{
+		return this.esJugador;
+	}
+	
+	//public Proyectil disparar() {
+		
+	//}
+>>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 }
