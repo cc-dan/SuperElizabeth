@@ -26,17 +26,31 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Attack on Titan, Final Season - Grupo ... - v1", 800, 600);
+		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
-		this.jugador = new Personaje(100, 500, true);
-		this.bloques = new Bloque[] {
-			new Bloque(0, 504, 64, 64, false),
-			new Bloque(736, 504, 64, 64, false),
-			new Bloque(0, 568, 800, 64, false),
-			new Bloque(0, 400, 800, 64, true)
-		};
+		this.jugador = new Personaje(100, 490, true);
+		
+		// crear nivel
+		int anchoAltoBloque = 32;
+		int pisos = 3;
+		
+		int bloquesPorPiso = entorno.ancho() / anchoAltoBloque;
+		int distanciaEntrePisos = entorno.alto() / pisos;
+		int cantidadDeBloques = bloquesPorPiso * pisos;
+		
+		bloques = new Bloque[cantidadDeBloques];
+		
+		// paredes a los bordes de la pantalla
+		bloques[0] = new Bloque(0 - 1, 0, 1, entorno.alto(), false);
+		bloques[1] = new Bloque(entorno.ancho() + 1, 0, 1, entorno.alto(), false);
+		int paredes = 2;
+		
+		int indice = paredes; // es donde empezamos a agregar los bloques en el array
+		for (int i = 0; i < pisos; i++)
+			for (int x = 0; x < bloquesPorPiso - paredes; x++)
+				bloques[indice++] = new Bloque(x * anchoAltoBloque, (entorno.alto() - distanciaEntrePisos * i) - anchoAltoBloque, anchoAltoBloque, anchoAltoBloque, false);
 		
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
@@ -63,17 +77,18 @@ public class Juego extends InterfaceJuego
 		// ...
 
 		jugador.setVelocidadVertical(jugador.getVelocidadVertical() + gravedad);
+		jugador.setVelocidadHorizontal(velocidadJugador);
 		
 		if (entorno.estaPresionada(entorno.TECLA_DERECHA))
-			jugador.setVelocidadHorizontal(velocidadJugador);	
+			jugador.setMirandoALaDerecha(true); //jugador.setVelocidadHorizontal(velocidadJugador);	
 		else if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA))
-			jugador.setVelocidadHorizontal(-velocidadJugador);
+			jugador.setMirandoALaDerecha(false); //jugador.setVelocidadHorizontal(-velocidadJugador);
 		else
 			jugador.setVelocidadHorizontal(0);
 		
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
-
+		
 		jugador.moverVertical();
 		procesarColisionVertical(jugador);
 		
@@ -91,7 +106,7 @@ public class Juego extends InterfaceJuego
 		for (Personaje enemigo : enemigos)
 		{
 			if (enemigo == null)
-				return;
+				continue;
 			
 			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
 			
@@ -173,14 +188,14 @@ public class Juego extends InterfaceJuego
 				continue;
 			
 			if (colision(personaje.getX(), personaje.getY(), personaje.getAncho(), personaje.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 			{
 				personaje.setY((int)(personaje.getY() - personaje.getVelocidadVertical()));
 
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
 				int direccion = ((personaje.getVelocidadVertical() >= 0)? 1 : -1);
 				while (!colision(personaje.getX(), personaje.getY() + direccion, personaje.getAncho(), personaje.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+								bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 				{
 					personaje.setY(personaje.getY() + direccion);
 				}
