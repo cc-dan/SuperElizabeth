@@ -7,6 +7,7 @@ public class Proyectil {
 	private int ancho; //= ?
 	private int alto; //= ?
 	private boolean inofensivo;
+<<<<<<< HEAD
 	private boolean mirandoDerecha = true;
 
 	public Proyectil(int x, int y, int velocidad, int ancho, int alto, boolean inofensivo) {
@@ -19,6 +20,28 @@ public class Proyectil {
 	}
 	public void mover(int direccion) {
 		this.x += this.velocidad * direccion;		
+=======
+	private boolean mirandoDerecha;
+	private Personaje padre;
+	
+	public Proyectil(int x, int y, boolean inofensivo, boolean derecha, Personaje padre) {
+		this.x = x;
+		this.y = y;
+		this.alto = 10;
+		this.ancho = 20;
+		this.inofensivo = inofensivo;
+		this.velocidad = 10;
+		this.mirandoDerecha = derecha;
+		this.padre = padre;
+	}
+	
+	public void mover() {
+		if(mirandoDerecha) {
+			this.x += velocidad;
+		} else {
+			this.x -= velocidad;
+		}
+>>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
 	}
 
 	public int getX() {
@@ -43,6 +66,7 @@ public class Proyectil {
 
 	public void setVelocidad(int velocidad) {
 		this.velocidad = velocidad;
+<<<<<<< HEAD
 		if(velocidad > 0) {
 			this.mirandoDerecha = true;
 		} else if(velocidad < 0) {
@@ -53,6 +77,8 @@ public class Proyectil {
 	public boolean mirandoALaDerecha()
 	{
 		return mirandoDerecha;
+=======
+>>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
 	}
 
 	public int getAncho() {
@@ -78,4 +104,9 @@ public class Proyectil {
 	public void setInofensivo(boolean inofensivo) {
 		this.inofensivo = inofensivo;
 	}
+	
+	public Personaje getPadre() {
+		return padre;
+	}
+	
 }

@@ -17,6 +17,7 @@ public class Personaje {
 
 =======
 	private boolean esJugador = false;
+	private boolean puedeDisparar = true;
 	
 	public Personaje(int x, int y, boolean jugable) 
 	{
@@ -41,6 +42,14 @@ public class Personaje {
 
 	public void saltar() {
 		this.velocidadVertical = -10;
+	}
+	
+	public boolean getPuedeDisparar() {
+		return this.puedeDisparar;
+	}
+	
+	public void setPuedeDisparar(boolean puedeDisparar) {
+		this.puedeDisparar = puedeDisparar;
 	}
 
 	public int getX() {
@@ -100,7 +109,7 @@ public class Personaje {
 >>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 	public boolean mirandoALaDerecha()
 	{
-		return mirandoDerecha;
+		return this.mirandoDerecha;
 	}
 <<<<<<< HEAD:src/juego/Jugador.java
 
@@ -142,8 +151,15 @@ public class Personaje {
 		return this.esJugador;
 	}
 	
+<<<<<<< HEAD
 	//public Proyectil disparar() {
 		
 	//}
 >>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
+=======
+	public Proyectil disparar() {
+		this.puedeDisparar = false;
+		return new Proyectil(this.x, this.y, this.esJugador, this.mirandoDerecha, this);
+	}
+>>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
 }
