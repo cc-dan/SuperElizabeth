@@ -12,6 +12,7 @@ public class Personaje {
 	private boolean saltando = false;
 	private boolean mirandoDerecha = true;
 	private boolean esJugador = false;
+	private boolean puedeDisparar = true;
 	
 	public Personaje(int x, int y, boolean jugable) 
 	{
@@ -35,6 +36,14 @@ public class Personaje {
 	
 	public void saltar() {
 		this.velocidadVertical = -10;
+	}
+	
+	public boolean getPuedeDisparar() {
+		return this.puedeDisparar;
+	}
+	
+	public void setPuedeDisparar(boolean puedeDisparar) {
+		this.puedeDisparar = puedeDisparar;
 	}
 
 	public int getX() {
@@ -86,7 +95,7 @@ public class Personaje {
 	
 	public boolean mirandoALaDerecha()
 	{
-		return mirandoDerecha;
+		return this.mirandoDerecha;
 	}
 	
 	public boolean estaSaltando()
@@ -104,7 +113,8 @@ public class Personaje {
 		return this.esJugador;
 	}
 	
-	//public Proyectil disparar() {
-		
-	//}
+	public Proyectil disparar() {
+		this.puedeDisparar = false;
+		return new Proyectil(this.x, this.y, this.esJugador, this.mirandoDerecha, this);
+	}
 }

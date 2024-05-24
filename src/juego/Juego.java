@@ -13,7 +13,7 @@ public class Juego extends InterfaceJuego
 	// Variables y métodos propios de cada grupo
 	// ...
 	Personaje jugador;
-	Proyectil proyectil[];
+	Proyectil proyectiles[];
 	
 	Bloque bloques[];
 	int velocidadJugador = 5;
@@ -32,11 +32,12 @@ public class Juego extends InterfaceJuego
 		// ...
 		this.jugador = new Personaje(100, 500, true);
 		this.bloques = new Bloque[] {
-			new Bloque(0, 504, 64, 64, false),
-			new Bloque(736, 504, 64, 64, false),
+			new Bloque(-64, 504, 64, 64, false),
+			new Bloque(800, 504, 64, 64, false),
 			new Bloque(0, 568, 800, 64, false),
 			new Bloque(0, 400, 800, 64, true)
 		};
+		this.proyectiles = new Proyectil[enemigos.length + 1];
 		
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
@@ -80,6 +81,9 @@ public class Juego extends InterfaceJuego
 		if (!jugador.estaSaltando() && entorno.sePresiono('x'))
 			jugador.saltar();
 		
+		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
+			agregarProyectil(jugador.disparar());
+		
 		// dibujar jugador
 		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
 									jugador.getY() + jugador.getAlto() / 2, 
@@ -88,10 +92,11 @@ public class Juego extends InterfaceJuego
 									0, 
 									Color.CYAN);
 		
-		for (Personaje enemigo : enemigos)
+		for (int i = 0; i < enemigos.length; i++)
 		{
+			Personaje enemigo = enemigos[i];
 			if (enemigo == null)
-				return;
+				continue;
 			
 			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
 			
@@ -108,7 +113,46 @@ public class Juego extends InterfaceJuego
 										enemigo.getAlto(), 
 										0, 
 										Color.RED);
+			
+			for (int j = 0; j < proyectiles.length; j++) {
+				if(proyectiles[j] == null)
+					continue;
+				
+				if(proyectiles[j].isInofensivo() && colision(proyectiles[j].getX(), 
+						proyectiles[j].getY(), 
+						proyectiles[j].getAncho(),
+						proyectiles[j].getAlto(),
+						enemigo.getX(),
+						enemigo.getY(),
+						enemigo.getAncho(),
+						enemigo.getAlto())) {
+					eliminarProyectil(j);
+					enemigos[i] = null;
+				}
+			}
 		}
+		
+		for (int i = 0; i < proyectiles.length; i++) {
+			Proyectil proyectil = proyectiles[i];
+			
+			if(proyectil == null) 
+				continue;
+				
+			entorno.dibujarRectangulo(proyectil.getX(),
+					proyectil.getY(),
+					proyectil.getAncho(),
+					proyectil.getAlto(),
+					0,
+					Color.MAGENTA);
+			
+			proyectil.mover();
+			
+			if(proyectil.getX() < 0 || proyectil.getX() > entorno.ancho()) {
+				eliminarProyectil(i);
+			}
+		}
+		
+		
 
 		// dibujar nivel
 		for (Bloque bloque : bloques)
@@ -116,12 +160,7 @@ public class Juego extends InterfaceJuego
 			if (bloque == null)
 				continue;
 			
-			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
-										bloque.getY() + bloque.getAlto() / 2, 
-										bloque.getAncho(), 
-										bloque.getAlto(), 
-										0, 
-										Color.GREEN);
+			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, bloque.getY() + bloque.getAlto() / 2, bloque.getAncho(), bloque.getAlto(), 0, Color.GREEN);
 		}
 	}
 	
@@ -193,5 +232,21 @@ public class Juego extends InterfaceJuego
 				personaje.setSaltando(false);
 			}
 		}
+	}
+	
+	public void agregarProyectil(Proyectil proyectil) {
+		for (int i = 0; i < this.proyectiles.length; i++) {
+			if(proyectiles[i] == null) {
+				proyectiles[i] = proyectil;
+				return;
+			}
+		}
+	}
+	
+	public void eliminarProyectil(int i) {
+		if(proyectiles[i].getPadre() != null) {
+			proyectiles[i].getPadre().setPuedeDisparar(true);
+		}
+		proyectiles[i] = null;
 	}
 }
