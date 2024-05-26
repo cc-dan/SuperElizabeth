@@ -12,6 +12,7 @@ public class Personaje {
 	private boolean saltando = false;
 	private boolean mirandoDerecha = true;
 	private boolean esJugador = false;
+	private int velocidadSalto = 7;
 	
 	public Personaje(int x, int y, boolean jugable) 
 	{
@@ -34,7 +35,7 @@ public class Personaje {
 	}
 	
 	public void saltar() {
-		this.velocidadVertical = -10;
+		this.velocidadVertical = -velocidadSalto;
 	}
 
 	public int getX() {

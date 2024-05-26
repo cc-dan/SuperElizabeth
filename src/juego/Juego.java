@@ -16,9 +16,9 @@ public class Juego extends InterfaceJuego
 	Proyectil proyectil[];
 	
 	Bloque bloques[];
-	int velocidadJugador = 5;
+	int velocidadJugador = 3;
 	int velocidadEnemigos = 3;
-	float gravedad = 0.2f;
+	float gravedad = 0.1f;
 	
 	int cantidadEnemigos = 4;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
@@ -26,36 +26,44 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 800, 600);
+		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 1024, 768);
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
-		this.jugador = new Personaje(100, 490, true);
+		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true);
 		
 		// crear nivel
-		int anchoAltoBloque = 32;
-		int pisos = 3;
+		int anchoBloque = 32; // métodos estáticos?
+		int altoBloque = 32;
+		int pisos = 4;
 		
-		int bloquesPorPiso = entorno.ancho() / anchoAltoBloque;
+		int bloquesPorPiso = entorno.ancho() / anchoBloque;
 		int distanciaEntrePisos = entorno.alto() / pisos;
 		int cantidadDeBloques = bloquesPorPiso * pisos;
+		int bloquesRompiblesPorPiso = 4;
 		
 		bloques = new Bloque[cantidadDeBloques];
-		
-		// paredes a los bordes de la pantalla
-		bloques[0] = new Bloque(0 - 1, 0, 1, entorno.alto(), false);
-		bloques[1] = new Bloque(entorno.ancho() + 1, 0, 1, entorno.alto(), false);
-		int paredes = 2;
-		
-		int indice = paredes; // es donde empezamos a agregar los bloques en el array
-		for (int i = 0; i < pisos; i++)
-			for (int x = 0; x < bloquesPorPiso - paredes; x++)
-				bloques[indice++] = new Bloque(x * anchoAltoBloque, (entorno.alto() - distanciaEntrePisos * i) - anchoAltoBloque, anchoAltoBloque, anchoAltoBloque, false);
+
+		int indice = 0;
+		for (int piso = 0; piso < pisos; piso++)
+			for (int bloque = 0; bloque < bloquesPorPiso; bloque++)
+			{
+				boolean rompible = false;
+				if (piso > 0)
+					if (piso % 2 != 0)
+						rompible = bloque < bloquesRompiblesPorPiso || bloque >= bloquesPorPiso - bloquesRompiblesPorPiso;
+					else
+						rompible = bloque >= (bloquesPorPiso / 2 - bloquesRompiblesPorPiso / 2) && bloque < (bloquesPorPiso - (bloquesPorPiso / 2 - bloquesRompiblesPorPiso / 2));
+					
+				bloques[indice++] = new Bloque(bloque * anchoBloque, 
+												(entorno.alto() - distanciaEntrePisos * piso) - altoBloque, 
+												anchoBloque, altoBloque, rompible);
+			}
 		
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
 		{
-			Personaje nuevo = new Personaje(0, 300, false);
+			Personaje nuevo = new Personaje(this.entorno.ancho() / 2, 0, false);
 			nuevo.setX(100 + nuevo.getAncho() * i);
 			nuevo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = nuevo;
@@ -77,12 +85,11 @@ public class Juego extends InterfaceJuego
 		// ...
 
 		jugador.setVelocidadVertical(jugador.getVelocidadVertical() + gravedad);
-		jugador.setVelocidadHorizontal(velocidadJugador);
 		
 		if (entorno.estaPresionada(entorno.TECLA_DERECHA))
-			jugador.setMirandoALaDerecha(true); //jugador.setVelocidadHorizontal(velocidadJugador);	
+			jugador.setVelocidadHorizontal(velocidadJugador);	
 		else if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA))
-			jugador.setMirandoALaDerecha(false); //jugador.setVelocidadHorizontal(-velocidadJugador);
+			jugador.setVelocidadHorizontal(-velocidadJugador);
 		else
 			jugador.setVelocidadHorizontal(0);
 		
@@ -136,7 +143,7 @@ public class Juego extends InterfaceJuego
 										bloque.getAncho(), 
 										bloque.getAlto(), 
 										0, 
-										Color.GREEN);
+										bloque.esRompible()? Color.ORANGE : Color.GREEN);
 		}
 	}
 	
@@ -154,6 +161,20 @@ public class Juego extends InterfaceJuego
 	
 	public void procesarColisionHorizontal(Personaje personaje)
 	{
+		// bordes de la pantalla
+		if (personaje.getX() < 0 || personaje.getX() > entorno.ancho() - personaje.getAncho())
+		{
+			if (!personaje.esJugador()) // control automático para los enemigos
+				personaje.setVelocidadHorizontal(personaje.getVelocidadHorizontal() * -1);
+			else
+				if (personaje.getX() < 0)
+					personaje.setX(0);
+				else
+					personaje.setX(this.entorno.ancho() - personaje.getAncho());
+			return;
+		}
+		
+		// bloques
 		for (Bloque bloque : this.bloques)
 		{
 			if (bloque == null)
