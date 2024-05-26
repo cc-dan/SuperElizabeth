@@ -27,7 +27,7 @@ public class Personaje {
 
 	public void moverHorizontal() 
 	{
-		this.x += this.velocidadHorizontal * (this.mirandoDerecha? 1 : -1);
+		this.x += this.velocidadHorizontal;
 	}
 	
 	public void moverVertical()
@@ -69,11 +69,11 @@ public class Personaje {
 
 	public void setVelocidadHorizontal(int velocidad) {
 		this.velocidadHorizontal = velocidad;
-		/*if(velocidad > 0) {
+		if(velocidad > 0) {
 			this.mirandoDerecha = true;
 		} else if(velocidad < 0) {
 			this.mirandoDerecha = false;
-		}*/
+		}
 	}
 	
 	public float getVelocidadVertical()
