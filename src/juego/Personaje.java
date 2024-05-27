@@ -14,12 +14,8 @@ public class Personaje {
 
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
-<<<<<<< HEAD
-
-=======
 	private int velocidadSalto = 7;
 	
->>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 	public Personaje(int x, int y, boolean jugable) 
 	{
 		this.x = x;
@@ -106,22 +102,11 @@ public class Personaje {
 	{
 		return this.mirandoDerecha;
 	}
-<<<<<<< HEAD
-
-	public boolean saltando()
-	{
-		return this.velocidadVertical < 0;
-	}
-
-
-=======
 	
 	public void setMirandoALaDerecha(boolean b)
 	{
 		this.mirandoDerecha = b;
 	}
-	
->>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 	public boolean estaSaltando()
 	{
 		return this.saltando;
