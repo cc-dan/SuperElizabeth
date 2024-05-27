@@ -11,17 +11,12 @@ public class Personaje {
 	private int alto;
 	private boolean saltando = false;
 	private boolean mirandoDerecha = true;
-<<<<<<< HEAD:src/juego/Jugador.java
 
-	public Jugador(int x, int y) {
-
-=======
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
-	
+
 	public Personaje(int x, int y, boolean jugable) 
 	{
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 		this.x = x;
 		this.y = y;
 		this.velocidadHorizontal = 5;
@@ -43,11 +38,11 @@ public class Personaje {
 	public void saltar() {
 		this.velocidadVertical = -10;
 	}
-	
+
 	public boolean getPuedeDisparar() {
 		return this.puedeDisparar;
 	}
-	
+
 	public void setPuedeDisparar(boolean puedeDisparar) {
 		this.puedeDisparar = puedeDisparar;
 	}
@@ -98,35 +93,13 @@ public class Personaje {
 	public int getAlto() {
 		return alto;
 	}
-<<<<<<< HEAD:src/juego/Jugador.java
-
 	public void setAlto(int alto) {
 		this.alto = alto;
 	}
 
-=======
-	
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
 	public boolean mirandoALaDerecha()
 	{
 		return this.mirandoDerecha;
-	}
-<<<<<<< HEAD:src/juego/Jugador.java
-
-	public Proyectil disparar() {
-
-		int direccionDerecha = 0;
-
-		Proyectil proyectil = new Proyectil(this.getX(), this.getY(), 1, 20, 10, true);
-
-		if(direccionDerecha > 0) {
-			this.mirandoDerecha = true;
-		} else if(direccionDerecha < 0) {
-			this.mirandoDerecha = false;
-		}
-		
-		return proyectil;
-
 	}
 
 	public boolean saltando()
@@ -134,32 +107,28 @@ public class Personaje {
 		return this.velocidadVertical < 0;
 	}
 
-=======
-	
+
 	public boolean estaSaltando()
 	{
 		return this.saltando;
 	}
-	
+
 	public void setSaltando(boolean b)
 	{
 		this.saltando = b;
 	}
-	
+
 	public boolean esJugador()
 	{
 		return this.esJugador;
 	}
-	
-<<<<<<< HEAD
-	//public Proyectil disparar() {
-		
-	//}
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e:src/juego/Personaje.java
-=======
 	public Proyectil disparar() {
 		this.puedeDisparar = false;
 		return new Proyectil(this.x, this.y, this.esJugador, this.mirandoDerecha, this);
 	}
->>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
+
+	public void cambiarSentido()
+	{
+		this.velocidadHorizontal = -1 * this.velocidadHorizontal;
+	}
 }

@@ -14,43 +14,25 @@ public class Juego extends InterfaceJuego
 	// ...
 	Personaje jugador;
 	Proyectil proyectiles[];
-	
+
 	Bloque bloques[];
 	int velocidadJugador = 5;
 	int velocidadEnemigos = 3;
 	float gravedad = 0.2f;
-<<<<<<< HEAD
 
-=======
-	
 	int cantidadEnemigos = 4;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
-	
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e
+
 	Juego()
 	{
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Attack on Titan, Final Season - Grupo ... - v1", 800, 600);
 
 		// Inicializar lo que haga falta para el juego
-		// ...
-<<<<<<< HEAD
-		this.jugador = new Jugador(100, 500);
-		this.enemigos = new Enemigo[] {
-				new Enemigo(600, 330, 32, 64, 1),
-				new Enemigo(510, 330, 32, 64, -1),
-				//new Enemigo(530, 330, 32, 64, -1),
-				//new Enemigo(300, 330, 32, 64, 1),
-				//new Enemigo(530, 330, 32, 64, -1)
-		};
-=======
+		// ...	
 		this.jugador = new Personaje(100, 500, true);
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e
 		this.bloques = new Bloque[] {
-<<<<<<< HEAD
-				
-				//int fila = 0; x
-				//int columna= 0; y
+
 				//planta baja
 				new Bloque(0, 504, 64, 64, false),
 				new Bloque(736, 504, 64, 64, false),
@@ -60,26 +42,23 @@ public class Juego extends InterfaceJuego
 				new Bloque(400, 400, 400, 64, false),
 				//segundo piso
 				new Bloque(0, 228, 400, 64, false),
-				new Bloque(400, 228, 400, 64, true)
-				
-				
-				
-=======
-			new Bloque(-64, 504, 64, 64, false),
-			new Bloque(800, 504, 64, 64, false),
-			new Bloque(0, 568, 800, 64, false),
-			new Bloque(0, 400, 800, 64, true)
->>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
+				new Bloque(400, 228, 400, 64, true),
 		};
+
 		this.proyectiles = new Proyectil[enemigos.length + 1];
-		
+
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
 		{
 			Personaje nuevo = new Personaje(0, 300, false);
-			nuevo.setX(100 + nuevo.getAncho() * i);
+			nuevo.setX(200 + nuevo.getAncho() * i);
 			nuevo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = nuevo;
+			if(cantidadEnemigos >= 2) {
+				nuevo.getX();
+				nuevo.getY();
+				nuevo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
+			}
 		}
 
 		// Inicia el juego!
@@ -105,7 +84,6 @@ public class Juego extends InterfaceJuego
 			jugador.setVelocidadHorizontal(-velocidadJugador);
 		else
 			jugador.setVelocidadHorizontal(0);
-<<<<<<< HEAD
 
 		// movimiento horizontal y colisión horizontal
 		jugador.moverHorizontal();
@@ -120,7 +98,7 @@ public class Juego extends InterfaceJuego
 				jugador.setX(jugador.getX() - jugador.getVelocidadHorizontal());
 
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
-				
+
 				int direccion = ((jugador.getVelocidadHorizontal() > 0)? 1 : -1);
 				while (!colision(jugador.getX() + direccion, jugador.getY(), jugador.getAncho(), jugador.getAlto(),
 						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
@@ -129,14 +107,14 @@ public class Juego extends InterfaceJuego
 				}
 			}
 		}
-=======
-		
+
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e
-
+		/*
+		if(jugador.getX() < 0 || jugador.getX() > 780)
+			jugador.setX(jugador.getX() - jugador.getVelocidadHorizontal());
+		 */
 		jugador.moverVertical();
-<<<<<<< HEAD
 		for (int i = 0; i < bloques.length; i++)
 		{
 			Bloque bloque = bloques[i];
@@ -147,7 +125,7 @@ public class Juego extends InterfaceJuego
 					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 			{
 				jugador.setY((int)(jugador.getY() - jugador.getVelocidadVertical()));
-				
+
 
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
 				int direccion = ((jugador.getVelocidadVertical() >= 0)? 1 : -1);
@@ -167,6 +145,7 @@ public class Juego extends InterfaceJuego
 			}
 		}
 
+
 		// dibujar jugador
 		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
 				jugador.getY() + jugador.getAlto() / 2, 
@@ -174,49 +153,69 @@ public class Juego extends InterfaceJuego
 				jugador.getAlto(), 
 				0, 
 				Color.CYAN);
-=======
+
 		procesarColisionVertical(jugador);
-		
+
 		if (!jugador.estaSaltando() && entorno.sePresiono('x'))
 			jugador.saltar();
-		
+
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
-		
+
+		//eliminarJugador(jugador);
+
+
 		// dibujar jugador
 		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
-									jugador.getY() + jugador.getAlto() / 2, 
-									jugador.getAncho(), 
-									jugador.getAlto(), 
-									0, 
-									Color.CYAN);
-		
+				jugador.getY() + jugador.getAlto() / 2, 
+				jugador.getAncho(), 
+				jugador.getAlto(), 
+				0, 
+				Color.CYAN);
+
+		//enemigos
 		for (int i = 0; i < enemigos.length; i++)
 		{
 			Personaje enemigo = enemigos[i];
 			if (enemigo == null)
 				continue;
-			
+			/*
+			if(this.cantidadEnemigos == 2)
+				enemigo = new Personaje(0,100,false);
+			 */
+
+			//*ARREGLAR* Enemigo dispara proyectil hacia una misma direccion por mas
+			//que rebote contra el entorno, en cambio, cuando toca los bloques
+			//si cambia la direccion del proyectil
+
+			if (enemigo.getPuedeDisparar())
+				agregarProyectil(enemigo.disparar());
+
 			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
-			
+
 			enemigo.moverHorizontal();
 			procesarColisionHorizontal(enemigo);
-			
+
+			if(enemigo.getX() < 0 || enemigo.getX() > 780)
+				enemigo.cambiarSentido();
+
 			enemigo.moverVertical();
 			procesarColisionVertical(enemigo);
-			
+
 			// dibujar enemigo
 			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
-										enemigo.getY() + enemigo.getAlto() / 2, 
-										enemigo.getAncho(), 
-										enemigo.getAlto(), 
-										0, 
-										Color.RED);
-			
-			for (int j = 0; j < proyectiles.length; j++) {
+					enemigo.getY() + enemigo.getAlto() / 2, 
+					enemigo.getAncho(), 
+					enemigo.getAlto(), 
+					0, 
+					Color.RED);
+
+			//matar enemigo, desaparecer enemigo y proyectil
+			for (int j = 0; j < proyectiles.length; j++) 
+			{
 				if(proyectiles[j] == null)
 					continue;
-				
+
 				if(proyectiles[j].isInofensivo() && colision(proyectiles[j].getX(), 
 						proyectiles[j].getY(), 
 						proyectiles[j].getAncho(),
@@ -230,133 +229,32 @@ public class Juego extends InterfaceJuego
 				}
 			}
 		}
-<<<<<<< HEAD
->>>>>>> 1b14dbda453f3fb68ad074f8539cf53d6d7e515e
-=======
-		
 		for (int i = 0; i < proyectiles.length; i++) {
 			Proyectil proyectil = proyectiles[i];
-			
+
 			if(proyectil == null) 
 				continue;
-				
+
+			//dibujar proyectiles
 			entorno.dibujarRectangulo(proyectil.getX(),
-					proyectil.getY(),
+					proyectil.getY() +25, //altura del disparo
 					proyectil.getAncho(),
 					proyectil.getAlto(),
 					0,
 					Color.MAGENTA);
-			
+
 			proyectil.mover();
-			
+
 			if(proyectil.getX() < 0 || proyectil.getX() > entorno.ancho()) {
 				eliminarProyectil(i);
 			}
 		}
-		
-		
->>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
 
-		// movimiento enemigo y colision vertical
-		
-		//solo recorre enemigo una vez, hay que meter otro ciclo dentro para que recorra todo
-
-		for (Enemigo enemigo : enemigos)
-		{
-			//Enemigo enemigo = enemigos[i];	//problema, para que la colision funque debe haber mismo largo
-			//Bloque bloque = bloques[i];	//de enemigos que de bloques
-
-			for (Bloque bloque : bloques)
-			{
-				//Bloque bloque = bloques[j];
-
-				if (bloque == null)
-					continue;
-
-				entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
-						enemigo.getY() + enemigo.getAlto() / 2, 
-						enemigo.getAncho(), 
-						enemigo.getAlto(), 
-						0, 
-						Color.red);
-
-				enemigo.moverVertical();			
-				enemigo.mover(1);		
-				enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
-
-
-				//cambiar sentido
-				if(enemigo.getX() <= 10 || enemigo.getX() >= 780)
-					enemigo.cambiarSentido();
-
-
-				if (colision(enemigo.getX(), enemigo.getY(), enemigo.getAncho(), enemigo.getAlto(),
-						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
-				{
-					System.out.println("colision enemigo");
-					
-					//el enemigo trepa cuando colisiona, no se por que
-					//enemigo.setY((int)(enemigo.getY() - enemigo.getVelocidadVertical()));
-					System.out.println(enemigo.getY());
-
-					// ajuste para que el enemigo quede al borde del bloque y no a una distancia de x + velocidad
-					int direccion = ((enemigo.getVelocidadVertical() >= 0)? 1 : -1);
-					while (!colision(enemigo.getX(), enemigo.getY() + direccion, enemigo.getAncho(), enemigo.getAlto(),
-							bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
-					{
-
-						enemigo.setY(enemigo.getY() + direccion);
-
-					}
-				}
-				enemigo.setVelocidadVertical(0);	
-			}
-
-		}
-			/*
-
-			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
-					enemigo.getY() + enemigo.getAlto() / 2, 
-					enemigo.getAncho(), 
-					enemigo.getAlto(), 
-					0, 
-					Color.red);
-
-			enemigo.moverVertical();			
-			enemigo.mover(2);
-			//enemigo.setVelocidadVertical(0);			
-			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
-
-
-			//cambiar sentido
-			if(enemigo.getX() <= 10 || enemigo.getX() >= 780)
-				enemigo.cambiarSentido();
-
-
-			if (colision(enemigo.getX(), enemigo.getY(), enemigo.getAncho(), enemigo.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto())){
-
-				enemigo.setY((int)(enemigo.getY() - enemigo.getVelocidadVertical()));
-
-				// ajuste para que el enemigo quede al borde del bloque y no a una distancia de x + velocidad
-				int direccion = ((enemigo.getVelocidadVertical() >= 0)? 1 : -1);
-				while (!colision(enemigo.getX(), enemigo.getY() + direccion, enemigo.getAncho(), enemigo.getAlto(),
-						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto())){
-
-					enemigo.setY(enemigo.getY() + direccion);
-
-				}
-				enemigo.setVelocidadVertical(0);	
-			}
-
-		}
-	*/
 		// dibujar nivel
 		for (Bloque bloque : bloques)
 		{
 			if (bloque == null)
 				continue;
-<<<<<<< HEAD
 
 			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
 					bloque.getY() + bloque.getAlto() / 2, 
@@ -364,10 +262,9 @@ public class Juego extends InterfaceJuego
 					bloque.getAlto(), 
 					0, 
 					Color.GREEN);
-=======
-			
+
 			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, bloque.getY() + bloque.getAlto() / 2, bloque.getAncho(), bloque.getAlto(), 0, Color.GREEN);
->>>>>>> 5b7e82864d168ece5d9562b644202455e9c0c4a6
+
 		}
 	}
 
@@ -382,33 +279,33 @@ public class Juego extends InterfaceJuego
 		return (x1 + w1 > x2 && x2 + w2 > x1) && 
 				(y1 + h1 > y2 && y2 + h2 > y1);
 	}
-	
+
 	public void procesarColisionHorizontal(Personaje personaje)
 	{
 		for (Bloque bloque : this.bloques)
 		{
 			if (bloque == null)
 				continue;
-			
+
 			if (colision(personaje.getX(), personaje.getY(), personaje.getAncho(), personaje.getAlto(),
 					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 			{
 				personaje.setX(personaje.getX() - personaje.getVelocidadHorizontal());
-				
+
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
 				int direccion = ((personaje.getVelocidadHorizontal() > 0)? 1 : -1);
 				while (!colision(personaje.getX() + direccion, personaje.getY(), personaje.getAncho(), personaje.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 				{
 					personaje.setX(personaje.getX() + direccion);
 				}
-				
+
 				if (!personaje.esJugador()) // control automático para los enemigos
 					personaje.setVelocidadHorizontal(personaje.getVelocidadHorizontal() * -1);
 			}
 		}
 	}
-	
+
 	public void procesarColisionVertical(Personaje personaje)
 	{
 		personaje.setSaltando(true);
@@ -417,7 +314,7 @@ public class Juego extends InterfaceJuego
 			Bloque bloque = bloques[i];
 			if (bloque == null)
 				continue;
-			
+
 			if (colision(personaje.getX(), personaje.getY(), personaje.getAncho(), personaje.getAlto(),
 					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 			{
@@ -426,21 +323,21 @@ public class Juego extends InterfaceJuego
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
 				int direccion = ((personaje.getVelocidadVertical() >= 0)? 1 : -1);
 				while (!colision(personaje.getX(), personaje.getY() + direccion, personaje.getAncho(), personaje.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 				{
 					personaje.setY(personaje.getY() + direccion);
 				}
-				
+
 				// destrucción de bloques
 				if (personaje.getVelocidadVertical() < 0 && bloque.esRompible())
 					bloques[i] = null;
-				
+
 				personaje.setVelocidadVertical(0);
 				personaje.setSaltando(false);
 			}
 		}
 	}
-	
+
 	public void agregarProyectil(Proyectil proyectil) {
 		for (int i = 0; i < this.proyectiles.length; i++) {
 			if(proyectiles[i] == null) {
@@ -449,11 +346,36 @@ public class Juego extends InterfaceJuego
 			}
 		}
 	}
-	
+
 	public void eliminarProyectil(int i) {
 		if(proyectiles[i].getPadre() != null) {
 			proyectiles[i].getPadre().setPuedeDisparar(true);
 		}
 		proyectiles[i] = null;
+	}
+
+	//AYUDA
+	public void eliminarJugador(Personaje jugador) {
+
+		for (int i = 0; i < proyectiles.length; i++) 
+		{
+			if(proyectiles[i] == null)
+				continue;
+
+			if(jugador == null)
+				continue;
+
+			if(proyectiles[i].isInofensivo() && colision(proyectiles[i].getX(), 
+					proyectiles[i].getY(), 
+					proyectiles[i].getAncho(),
+					proyectiles[i].getAlto(),
+					jugador.getX(),
+					jugador.getY(),
+					jugador.getAncho(),
+					jugador.getAlto())) {
+				eliminarProyectil(i);
+				jugador = null;
+			}
+		}		
 	}
 }
