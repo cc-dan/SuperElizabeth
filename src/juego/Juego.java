@@ -16,16 +16,22 @@ public class Juego extends InterfaceJuego
 	Proyectil proyectiles[];
 
 	Bloque bloques[];
-	int velocidadJugador = 5;
+	int velocidadJugador = 3;
 	int velocidadEnemigos = 3;
+<<<<<<< HEAD
 	float gravedad = 0.2f;
 
+=======
+	float gravedad = 0.1f;
+	
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 	int cantidadEnemigos = 4;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
 
 	Juego()
 	{
 		// Inicializa el objeto entorno
+<<<<<<< HEAD
 		this.entorno = new Entorno(this, "Attack on Titan, Final Season - Grupo ... - v1", 800, 600);
 
 		// Inicializar lo que haga falta para el juego
@@ -45,13 +51,53 @@ public class Juego extends InterfaceJuego
 				new Bloque(400, 228, 400, 64, true),
 		};
 
+=======
+		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 1024, 768);
+		
+		// Inicializar lo que haga falta para el juego
+		// ...
+		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true);
+		
+		// crear nivel
+		int anchoBloque = 32; // métodos estáticos?
+		int altoBloque = 32;
+		int pisos = 4;
+		
+		int bloquesPorPiso = entorno.ancho() / anchoBloque;
+		int distanciaEntrePisos = entorno.alto() / pisos;
+		int cantidadDeBloques = bloquesPorPiso * pisos;
+		int bloquesRompiblesPorPiso = 4;
+		
+		bloques = new Bloque[cantidadDeBloques];
+
+		int indice = 0;
+		for (int piso = 0; piso < pisos; piso++)
+			for (int bloque = 0; bloque < bloquesPorPiso; bloque++)
+			{
+				boolean rompible = false;
+				if (piso > 0)
+					if (piso % 2 != 0)
+						rompible = bloque < bloquesRompiblesPorPiso || bloque >= bloquesPorPiso - bloquesRompiblesPorPiso;
+					else
+						rompible = bloque >= (bloquesPorPiso / 2 - bloquesRompiblesPorPiso / 2) && bloque < (bloquesPorPiso - (bloquesPorPiso / 2 - bloquesRompiblesPorPiso / 2));
+					
+				bloques[indice++] = new Bloque(bloque * anchoBloque, 
+												(entorno.alto() - distanciaEntrePisos * piso) - altoBloque, 
+												anchoBloque, altoBloque, rompible);
+			}
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 		this.proyectiles = new Proyectil[enemigos.length + 1];
 
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
 		{
+<<<<<<< HEAD
 			Personaje nuevo = new Personaje(0, 300, false);
 			nuevo.setX(200 + nuevo.getAncho() * i);
+=======
+			Personaje nuevo = new Personaje(this.entorno.ancho() / 2, 0, false);
+			nuevo.setX(100 + nuevo.getAncho() * i);
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 			nuevo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = nuevo;
 			if(cantidadEnemigos >= 2) {
@@ -110,10 +156,14 @@ public class Juego extends InterfaceJuego
 
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
+<<<<<<< HEAD
 		/*
 		if(jugador.getX() < 0 || jugador.getX() > 780)
 			jugador.setX(jugador.getX() - jugador.getVelocidadHorizontal());
 		 */
+=======
+		
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 		jugador.moverVertical();
 		for (int i = 0; i < bloques.length; i++)
 		{
@@ -255,6 +305,7 @@ public class Juego extends InterfaceJuego
 		{
 			if (bloque == null)
 				continue;
+<<<<<<< HEAD
 
 			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
 					bloque.getY() + bloque.getAlto() / 2, 
@@ -265,6 +316,15 @@ public class Juego extends InterfaceJuego
 
 			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, bloque.getY() + bloque.getAlto() / 2, bloque.getAncho(), bloque.getAlto(), 0, Color.GREEN);
 
+=======
+			
+			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
+										bloque.getY() + bloque.getAlto() / 2, 
+										bloque.getAncho(), 
+										bloque.getAlto(), 
+										0, 
+										bloque.esRompible()? Color.ORANGE : Color.GREEN);
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 		}
 	}
 
@@ -282,6 +342,20 @@ public class Juego extends InterfaceJuego
 
 	public void procesarColisionHorizontal(Personaje personaje)
 	{
+		// bordes de la pantalla
+		if (personaje.getX() < 0 || personaje.getX() > entorno.ancho() - personaje.getAncho())
+		{
+			if (!personaje.esJugador()) // control automático para los enemigos
+				personaje.setVelocidadHorizontal(personaje.getVelocidadHorizontal() * -1);
+			else
+				if (personaje.getX() < 0)
+					personaje.setX(0);
+				else
+					personaje.setX(this.entorno.ancho() - personaje.getAncho());
+			return;
+		}
+		
+		// bloques
 		for (Bloque bloque : this.bloques)
 		{
 			if (bloque == null)
@@ -316,14 +390,18 @@ public class Juego extends InterfaceJuego
 				continue;
 
 			if (colision(personaje.getX(), personaje.getY(), personaje.getAncho(), personaje.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
 			{
 				personaje.setY((int)(personaje.getY() - personaje.getVelocidadVertical()));
 
 				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
 				int direccion = ((personaje.getVelocidadVertical() >= 0)? 1 : -1);
 				while (!colision(personaje.getX(), personaje.getY() + direccion, personaje.getAncho(), personaje.getAlto(),
+<<<<<<< HEAD
 						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+=======
+								bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 				{
 					personaje.setY(personaje.getY() + direccion);
 				}

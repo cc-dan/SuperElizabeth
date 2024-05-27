@@ -14,7 +14,12 @@ public class Personaje {
 
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
+<<<<<<< HEAD
 
+=======
+	private int velocidadSalto = 7;
+	
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 	public Personaje(int x, int y, boolean jugable) 
 	{
 		this.x = x;
@@ -32,11 +37,11 @@ public class Personaje {
 
 	public void moverVertical()
 	{
-		this.y += Math.ceil(this.velocidadVertical); // evitamos que el jugador no se mueva cuando 0 < velocidad vertical < 1 
+		this.y += Math.ceil(this.velocidadVertical); // siempre que velocidadVertical sea mayor a 0 se debería ver modificada la posición vertical
 	}
 
 	public void saltar() {
-		this.velocidadVertical = -10;
+		this.velocidadVertical = -velocidadSalto;
 	}
 
 	public boolean getPuedeDisparar() {
@@ -101,6 +106,7 @@ public class Personaje {
 	{
 		return this.mirandoDerecha;
 	}
+<<<<<<< HEAD
 
 	public boolean saltando()
 	{
@@ -108,6 +114,14 @@ public class Personaje {
 	}
 
 
+=======
+	
+	public void setMirandoALaDerecha(boolean b)
+	{
+		this.mirandoDerecha = b;
+	}
+	
+>>>>>>> b165a0921161abb3220419c564d42204d934fa3b
 	public boolean estaSaltando()
 	{
 		return this.saltando;
