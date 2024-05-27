@@ -4,8 +4,8 @@ public class Proyectil {
 	private int x;
 	private int y;
 	private int velocidad;
-	private int ancho; //= ?
-	private int alto; //= ?
+	private int ancho; 
+	private int alto;
 	private boolean inofensivo;
 	private boolean mirandoDerecha;
 	private Personaje padre;
