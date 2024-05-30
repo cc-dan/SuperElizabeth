@@ -18,7 +18,7 @@ public class Juego extends InterfaceJuego
 	int velocidadJugador = 3;
 	int velocidadEnemigos = 3;
 	float gravedad = 0.1f;
-	int cantidadEnemigos = 4;
+	int cantidadEnemigos = 6;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
 
 	Juego()
@@ -62,17 +62,14 @@ public class Juego extends InterfaceJuego
 		this.proyectiles = new Proyectil[enemigos.length + 1];
 
 		// spawn de enemigos
-		int y_enemigo = 50;
 		for (int i = 0; i < cantidadEnemigos; i++)
 		{
-			Personaje enemigo = new Personaje(this.entorno.ancho() / 2, y_enemigo, false);
-			enemigo.setX(100 + enemigo.getAncho() * i);
+			Personaje enemigo = new Personaje(this.entorno.ancho() / 2, distanciaEntrePisos - 130, false);
+			enemigo.setX(500 + enemigo.getAncho() * i);
 			enemigo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
-			enemigos[i] = enemigo;
-
-			if(cantidadEnemigos > 2) {
-				y_enemigo += 200;
-			}
+			enemigos[i] = enemigo;			
+			if (i % 2 != 0 )
+				distanciaEntrePisos += 200;
 		}
 
 		// Inicia el juego!
@@ -171,8 +168,10 @@ public class Juego extends InterfaceJuego
 
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
-
-		eliminarJugador(jugador);
+		
+		// puede estar generando error esta condicion
+		if (jugador.getPuedeDisparar())
+			colisionarConProyectiles(jugador);
 
 
 		// dibujar jugador
@@ -183,7 +182,7 @@ public class Juego extends InterfaceJuego
 				0, 
 				Color.CYAN);
 
-		//enemigos
+		// enemigos
 		for (int i = 0; i < enemigos.length; i++)
 		{
 			Personaje enemigo = enemigos[i];
@@ -376,11 +375,15 @@ public class Juego extends InterfaceJuego
 		proyectiles[i] = null;
 	}
 
-	public void eliminarJugador(Personaje jugador) {
+	public void colisionarConProyectiles(Personaje jugador) {
 
 		for (int i = 0; i < proyectiles.length; i++) 
 		{
 			if(proyectiles[i] == null)
+				continue;
+			
+			// *TO CHECK* tira error a veces ("Index 6 out of bounds for length 6")
+			if (enemigos[i] == null)
 				continue;
 
 			if(colision(proyectiles[i].getX(), 
@@ -402,8 +405,8 @@ public class Juego extends InterfaceJuego
 			{
 				eliminarProyectil(i);
 				System.out.println("colision");
-				//jugador = null;
-				//jugador.setX(500);
+				//jugador = reiniciar.vidas;
+				//jugador.setX(500) && jugador.setY(entorno.alto() - 96);
 			}
 		}	
 	}
