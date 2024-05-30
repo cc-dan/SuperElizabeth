@@ -1,8 +1,10 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.random.*;
 import entorno.Entorno;
+import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
@@ -16,13 +18,15 @@ public class Juego extends InterfaceJuego
 	Proyectil proyectiles[];
 	
 	Bloque bloques[];
-	int velocidadJugador = 3;
+	int velocidadJugador = 5;
 	int velocidadEnemigos = 3;
 	float gravedad = 0.1f;
 	
 	int cantidadEnemigos = 4;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
 	
+	private Image fondo;
+			
 	Juego()
 	{
 		// Inicializa el objeto entorno
@@ -30,7 +34,9 @@ public class Juego extends InterfaceJuego
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
-		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true);
+		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true, entorno);
+		
+		this.fondo = Herramientas.cargarImagen("fondo2.png");
 		
 		// crear nivel
 		int anchoBloque = 32; // métodos estáticos?
@@ -57,14 +63,14 @@ public class Juego extends InterfaceJuego
 					
 				bloques[indice++] = new Bloque(bloque * anchoBloque, 
 												(entorno.alto() - distanciaEntrePisos * piso) - altoBloque, 
-												anchoBloque, altoBloque, rompible);
+												anchoBloque, altoBloque, rompible, entorno);
 			}
 		this.proyectiles = new Proyectil[enemigos.length + 1];
 		
 		// esto es provisorio, solo para pruebas
 		for (int i = 0; i < cantidadEnemigos; i++)
 		{
-			Personaje nuevo = new Personaje(this.entorno.ancho() / 2, 0, false);
+			Personaje nuevo = new Personaje(this.entorno.ancho() / 2, 0, false, entorno);
 			nuevo.setX(100 + nuevo.getAncho() * i);
 			nuevo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = nuevo;
@@ -84,35 +90,49 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-
+		
+		//entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
+		
+		// MOVIMIENTO JUGADOR:
 		jugador.setVelocidadVertical(jugador.getVelocidadVertical() + gravedad);
 		
-		if (entorno.estaPresionada(entorno.TECLA_DERECHA))
-			jugador.setVelocidadHorizontal(velocidadJugador);	
-		else if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA))
+		if (entorno.estaPresionada(entorno.TECLA_DERECHA)) {
+			jugador.setVelocidadHorizontal(velocidadJugador);
+			jugador.setEnMovimiento(true);
+		}
+		else if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
 			jugador.setVelocidadHorizontal(-velocidadJugador);
-		else
+			jugador.setEnMovimiento(true);
+		}
+		else {
 			jugador.setVelocidadHorizontal(0);
+			jugador.setEnMovimiento(false);
+		}
 		
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
 		
 		jugador.moverVertical();
 		procesarColisionVertical(jugador);
-		
-		if (!jugador.estaSaltando() && entorno.sePresiono('x'))
+		///////CAMBIO////agregue setSaltando	
+		if (!jugador.estaSaltando() && entorno.sePresiono('x')) {
 			jugador.saltar();
-		
+			jugador.setSaltando(true);
+		}
+	
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
 		
-		// dibujar jugador
-		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
-									jugador.getY() + jugador.getAlto() / 2, 
-									jugador.getAncho(), 
-									jugador.getAlto(), 
-									0, 
-									Color.CYAN);
+		// Dibujar jugador:
+		
+		jugador.dibujarse();
+//		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
+//									jugador.getY() + jugador.getAlto() / 2, 
+//									jugador.getAncho(), 
+//									jugador.getAlto(), 
+//									0, 
+//									Color.CYAN);
+		
 		
 		for (int i = 0; i < enemigos.length; i++)
 		{
@@ -159,14 +179,15 @@ public class Juego extends InterfaceJuego
 			
 			if(proyectil == null) 
 				continue;
-				
-			entorno.dibujarRectangulo(proyectil.getX(),
-					proyectil.getY(),
-					proyectil.getAncho(),
-					proyectil.getAlto(),
-					0,
-					Color.MAGENTA);
+
+//			entorno.dibujarRectangulo(proyectil.getX(),
+//					proyectil.getY(),
+//					proyectil.getAncho(),
+//					proyectil.getAlto(),
+//					0,
+//					Color.MAGENTA);
 			
+			proyectil.dibujar();
 			proyectil.mover();
 			
 			if(proyectil.getX() < 0 || proyectil.getX() > entorno.ancho()) {
@@ -176,18 +197,18 @@ public class Juego extends InterfaceJuego
 		
 		
 
-		// dibujar nivel
+		// dibujar nivel/bloques
 		for (Bloque bloque : bloques)
 		{
 			if (bloque == null)
 				continue;
-			
-			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
-										bloque.getY() + bloque.getAlto() / 2, 
-										bloque.getAncho(), 
-										bloque.getAlto(), 
-										0, 
-										bloque.esRompible()? Color.ORANGE : Color.GREEN);
+			bloque.dibujarse();
+//			entorno.dibujarRectangulo(bloque.getX() + bloque.getAncho() / 2, 
+//										bloque.getY() + bloque.getAlto() / 2, 
+//										bloque.getAncho(), 
+//										bloque.getAlto(), 
+//										0, 
+//										bloque.esRompible()? Color.ORANGE : Color.GREEN);
 		}
 	}
 	
@@ -199,6 +220,7 @@ public class Juego extends InterfaceJuego
 	
 	public boolean colision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
 	{
+		
 		return (x1 + w1 > x2 && x2 + w2 > x1) && 
 				(y1 + h1 > y2 && y2 + h2 > y1);
 	}
@@ -266,13 +288,20 @@ public class Juego extends InterfaceJuego
 				}
 				
 				// destrucción de bloques
-				if (personaje.getVelocidadVertical() < 0 && bloque.esRompible())
+				if (personaje.getVelocidadVertical() < 0 && bloque.esRompible()){
+					bloque.guardarPosicion(bloque.getX(), bloque.getY());
+					
 					bloques[i] = null;
+					bloque.setSeRompio(true);
+				}
 				
 				personaje.setVelocidadVertical(0);
 				personaje.setSaltando(false);
+				
 			}
+			
 		}
+		
 	}
 	
 	public void agregarProyectil(Proyectil proyectil) {
