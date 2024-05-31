@@ -120,14 +120,6 @@ public class Juego extends InterfaceJuego
 		procesarColisionHorizontal(jugador);
 		jugador.moverVertical();
 
-		// dibujar jugador
-		/*entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
-				jugador.getY() + jugador.getAlto() / 2, 
-				jugador.getAncho(), 
-				jugador.getAlto(), 
-				0, 
-				Color.CYAN);*/
-
 		procesarColisionVertical(jugador);
 
 		///////CAMBIO////agregue setSaltando	
@@ -139,20 +131,7 @@ public class Juego extends InterfaceJuego
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
 
-		// puede estar generando error esta condicion
-		/*if (jugador.getPuedeDisparar())
-			colisionarConProyectiles(jugador);*/
-
-		// Dibujar jugador:
-
 		jugador.dibujarse();
-		//		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
-		//									jugador.getY() + jugador.getAlto() / 2, 
-		//									jugador.getAncho(), 
-		//									jugador.getAlto(), 
-		//									0, 
-		//									Color.CYAN);
-
 
 		for (int i = 0; i < enemigos.length; i++)
 		{
@@ -205,19 +184,23 @@ public class Juego extends InterfaceJuego
 			if(proyectil == null) 
 				continue;
 
-
-			//			entorno.dibujarRectangulo(proyectil.getX(),
-			//					proyectil.getY(),
-			//					proyectil.getAncho(),
-			//					proyectil.getAlto(),
-			//					0,
-			//					Color.MAGENTA);
-
 			proyectil.dibujar();
 			proyectil.mover();
-
+			
 			if(proyectil.getX() < 0 || proyectil.getX() > entorno.ancho()) {
 				eliminarProyectil(i);
+			}
+			
+			// colisión con proyectiles enemigos
+			for (int j = 0; j < proyectiles.length; j++) {
+				if (proyectiles[j] == null || proyectil == null) break;
+				if (proyectiles[j].isInofensivo() != proyectil.isInofensivo() && 
+					colision(proyectil.getX(), proyectil.getY(), proyectil.getAncho(), proyectil.getAlto(),
+							proyectiles[j].getX(), proyectiles[j].getY(), proyectiles[j].getAncho(), proyectiles[j].getAlto()))
+				{
+					eliminarProyectil(i);
+					eliminarProyectil(j);
+				}
 			}
 		}
 
