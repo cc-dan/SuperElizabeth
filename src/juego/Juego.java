@@ -1,5 +1,7 @@
 package juego;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Color;
 import java.util.Random;
 import java.awt.Image;
@@ -35,6 +37,9 @@ public class Juego extends InterfaceJuego
 		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true, entorno);
 
 		this.fondo = Herramientas.cargarImagen("fondo2.png");
+		
+		Timer timer = new Timer();
+		
 		// crear nivel
 		int anchoBloque = 32; // métodos estáticos?
 		int altoBloque = 32;
@@ -92,7 +97,7 @@ public class Juego extends InterfaceJuego
 		// Procesamiento de un instante de tiempo
 		// ...
 
-		//entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
+		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
 
 		// MOVIMIENTO JUGADOR:
 		jugador.setVelocidadVertical(jugador.getVelocidadVertical() + gravedad);
@@ -114,44 +119,14 @@ public class Juego extends InterfaceJuego
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
 		jugador.moverVertical();
-		for (int i = 0; i < bloques.length; i++)
-		{
-			Bloque bloque = bloques[i];
-			if (bloque == null)
-				continue;
-
-			if (colision(jugador.getX(), jugador.getY(), jugador.getAncho(), jugador.getAlto(),
-					bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
-			{
-				jugador.setY((int)(jugador.getY() - jugador.getVelocidadVertical()));
-
-
-				// ajuste para que el jugador quede al borde del bloque y no a una distancia de x + velocidad
-				int direccion = ((jugador.getVelocidadVertical() >= 0)? 1 : -1);
-				while (!colision(jugador.getX(), jugador.getY() + direccion, jugador.getAncho(), jugador.getAlto(),
-						bloque.getX(), bloque.getY(), bloque.getAncho(), bloque.getAlto()))
-				{
-					jugador.setY(jugador.getY() + direccion);					
-				}
-
-				// destrucción de bloques
-				if (jugador.getVelocidadVertical() < 0 && bloque.esRompible())
-					bloques[i] = null;
-
-				jugador.setVelocidadVertical(0);	
-				if (entorno.sePresiono('x'))
-					jugador.saltar();
-			}
-		}
-
 
 		// dibujar jugador
-		entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
+		/*entorno.dibujarRectangulo(jugador.getX() + jugador.getAncho() / 2, 
 				jugador.getY() + jugador.getAlto() / 2, 
 				jugador.getAncho(), 
 				jugador.getAlto(), 
 				0, 
-				Color.CYAN);
+				Color.CYAN);*/
 
 		procesarColisionVertical(jugador);
 
@@ -165,8 +140,8 @@ public class Juego extends InterfaceJuego
 			agregarProyectil(jugador.disparar());
 
 		// puede estar generando error esta condicion
-		if (jugador.getPuedeDisparar())
-			colisionarConProyectiles(jugador);
+		/*if (jugador.getPuedeDisparar())
+			colisionarConProyectiles(jugador);*/
 
 		// Dibujar jugador:
 
@@ -185,10 +160,6 @@ public class Juego extends InterfaceJuego
 			if (enemigo == null)
 				continue;
 
-			// *TO FIX* Enemigo dispara proyectil hacia una misma direccion por mas
-			// que rebote contra el entorno, en cambio, cuando toca los bloques
-			// si cambia la direccion del proyectil
-
 			if (enemigo.getPuedeDisparar())
 				agregarProyectil(enemigo.disparar());
 
@@ -197,9 +168,6 @@ public class Juego extends InterfaceJuego
 			enemigo.moverHorizontal();
 			procesarColisionHorizontal(enemigo);
 
-			// *TO FIX* enemigos no rebotan contra los costados
-			if (enemigo.getX() < 1 || enemigo.getX() > 1020)
-				enemigo.cambiarSentido();
 
 			enemigo.moverVertical();
 			procesarColisionVertical(enemigo);
@@ -379,41 +347,5 @@ public class Juego extends InterfaceJuego
 			proyectiles[i].getPadre().setPuedeDisparar(true);
 		}
 		proyectiles[i] = null;
-	}
-
-	public void colisionarConProyectiles(Personaje jugador) {
-
-		for (int i = 0; i < proyectiles.length; i++) 
-		{
-			if(proyectiles[i] == null)
-				continue;
-
-			// *TO CHECK* tira error a veces ("Index 6 out of bounds for length 6")
-			if (enemigos[i] == null)
-				continue;
-
-			if(colision(proyectiles[i].getX(), 
-					proyectiles[i].getY(), 
-					proyectiles[i].getAncho(),
-					proyectiles[i].getAlto(),
-					jugador.getX(),
-					jugador.getY(),
-					jugador.getAncho(),
-					jugador.getAlto()) ||
-					colision(enemigos[i].getX(), 
-							enemigos[i].getY(), 
-							enemigos[i].getAncho(),
-							enemigos[i].getAlto(),
-							jugador.getX(),
-							jugador.getY(),
-							jugador.getAncho(),
-							jugador.getAlto())) 
-			{
-				eliminarProyectil(i);
-				System.out.println("colision");
-				//jugador = reiniciar.vidas;
-				//jugador.setX(500) && jugador.setY(entorno.alto() - 96);
-			}
-		}	
 	}
 }

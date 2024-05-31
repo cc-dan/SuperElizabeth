@@ -34,7 +34,7 @@ public class Proyectil {
 	}
 
 	public void dibujar() {
-		if(inofensivo) {
+		/*if(inofensivo)*/ {
 			if(mirandoDerecha)
 				entorno.dibujarImagen(this.proyectilDer, this.x + 30, this.y + 20, 0, 2);
 			if(!mirandoDerecha)
