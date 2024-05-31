@@ -1,7 +1,7 @@
 package juego;
 
-import java.util.Timer;
-import java.util.TimerTask;
+//import java.util.Timer;
+//import java.util.TimerTask;
 import java.awt.Color;
 import java.util.Random;
 import java.awt.Image;
@@ -25,6 +25,12 @@ public class Juego extends InterfaceJuego
 	int cantidadEnemigos = 6;
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
 	private Image fondo;
+	
+	// PUNTAJE
+	int puntaje = 0;
+	int enemEliminados = 0;
+
+	Gatito gatito;
 
 	Juego()
 	{
@@ -34,14 +40,15 @@ public class Juego extends InterfaceJuego
 
 		// Inicializar lo que haga falta para el juego
 		// ...
-		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true, entorno);
+		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true, entorno);		
+
 
 		this.fondo = Herramientas.cargarImagen("fondo2.png");
-		
-		Timer timer = new Timer();
-		
+
+		//Timer timer = new Timer();
+
 		// crear nivel
-		int anchoBloque = 32; // métodos estáticos?
+		int anchoBloque = 32;
 		int altoBloque = 32;
 		int pisos = 4;
 
@@ -52,8 +59,9 @@ public class Juego extends InterfaceJuego
 
 		bloques = new Bloque[cantidadDeBloques];
 
+		int piso;
 		int indice = 0;
-		for (int piso = 0; piso < pisos; piso++)
+		for (piso = 0; piso < pisos; piso++)
 			for (int bloque = 0; bloque < bloquesPorPiso; bloque++)
 			{
 				boolean rompible = false;
@@ -68,6 +76,9 @@ public class Juego extends InterfaceJuego
 									(entorno.alto() - distanciaEntrePisos * piso) - altoBloque, 
 									anchoBloque, altoBloque, rompible, entorno);
 			}
+
+		this.gatito = new Gatito(entorno.ancho() / 2, 20, anchoBloque, altoBloque, entorno);
+
 
 		this.proyectiles = new Proyectil[enemigos.length + 1];
 
@@ -96,8 +107,10 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-
+		
 		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
+		
+		puntaje();
 
 		// MOVIMIENTO JUGADOR:
 		jugador.setVelocidadVertical(jugador.getVelocidadVertical() + gravedad);
@@ -133,11 +146,36 @@ public class Juego extends InterfaceJuego
 
 		jugador.dibujarse();
 
+
+		// OPCIONAL
+		if (colision(gatito.getX(), 
+				gatito.getY(), 
+				gatito.getAncho(),
+				gatito.getAlto(),
+				jugador.getX(),
+				jugador.getY(),
+				jugador.getAncho(),
+				jugador.getAlto())){
+
+			ganar();
+
+
+		}
+
 		for (int i = 0; i < enemigos.length; i++)
 		{
 			Personaje enemigo = enemigos[i];
 			if (enemigo == null)
 				continue;
+			
+			enemigos[i].setVelocidadHorizontal(velocidadEnemigos * Integer.signum(enemigos[i].getVelocidadHorizontal()));
+			
+			for (Personaje e : enemigos)
+            {
+                if (e == null || e == enemigos[i]) break;
+                if (colision(e.getX(), e.getY(), e.getAncho(), e.getAlto(), enemigos[i].getX(), enemigos[i].getY(), enemigos[i].getAncho(), enemigos[i].getAlto()))
+                    enemigos[i].setVelocidadHorizontal(enemigos[i].getVelocidadHorizontal() + 1);
+            }
 
 			if (enemigo.getPuedeDisparar())
 				agregarProyectil(enemigo.disparar());
@@ -150,6 +188,18 @@ public class Juego extends InterfaceJuego
 
 			enemigo.moverVertical();
 			procesarColisionVertical(enemigo);
+
+			if(colision(enemigo.getX(), 
+					enemigo.getY(), 
+					enemigo.getAncho(),
+					enemigo.getAlto(),
+					jugador.getX(),
+					jugador.getY(),
+					jugador.getAncho(),
+					jugador.getAlto())) {
+
+				perder();
+			}
 
 			// dibujar enemigo
 			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
@@ -175,10 +225,13 @@ public class Juego extends InterfaceJuego
 						enemigo.getAlto())) {
 					eliminarProyectil(j);
 					enemigos[i] = null;
+					puntaje += 2;
+					enemEliminados++;
 				}
 			}
 		}
 		for (int i = 0; i < proyectiles.length; i++) {
+
 			Proyectil proyectil = proyectiles[i];
 
 			if(proyectil == null) 
@@ -186,17 +239,29 @@ public class Juego extends InterfaceJuego
 
 			proyectil.dibujar();
 			proyectil.mover();
-			
+
+			if(!proyectil.isInofensivo() && colision(proyectil.getX(), 
+					proyectil.getY(), 
+					proyectil.getAncho(),
+					proyectil.getAlto(),
+					jugador.getX(),
+					jugador.getY(),
+					jugador.getAncho(),
+					jugador.getAlto())) {
+
+				perder();
+			}
+
 			if(proyectil.getX() < 0 || proyectil.getX() > entorno.ancho()) {
 				eliminarProyectil(i);
 			}
-			
+
 			// colisión con proyectiles enemigos
 			for (int j = 0; j < proyectiles.length; j++) {
 				if (proyectiles[j] == null || proyectil == null) break;
 				if (proyectiles[j].isInofensivo() != proyectil.isInofensivo() && 
-					colision(proyectil.getX(), proyectil.getY(), proyectil.getAncho(), proyectil.getAlto(),
-							proyectiles[j].getX(), proyectiles[j].getY(), proyectiles[j].getAncho(), proyectiles[j].getAlto()))
+						colision(proyectil.getX(), proyectil.getY(), proyectil.getAncho(), proyectil.getAlto(),
+								proyectiles[j].getX(), proyectiles[j].getY(), proyectiles[j].getAncho(), proyectiles[j].getAlto()))
 				{
 					eliminarProyectil(i);
 					eliminarProyectil(j);
@@ -219,12 +284,24 @@ public class Juego extends InterfaceJuego
 			//										bloque.esRompible()? Color.ORANGE : Color.GREEN);
 
 		}
+
+		// DIBUJA GATITO
+		entorno.dibujarRectangulo(gatito.getX() + gatito.getAncho() / 2, 
+				gatito.getY() + gatito.getAlto() / 2, 
+				gatito.getAncho(), 
+				gatito.getAlto(), 
+				0, Color.ORANGE);
 	}
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
 	{
 		Juego juego = new Juego();
+		
+		/*Juego juego;
+		if(!perder() || !ganar())
+			juego = new Juego();
+			*/
 	}
 
 	public boolean colision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
@@ -237,8 +314,7 @@ public class Juego extends InterfaceJuego
 	public void procesarColisionHorizontal(Personaje personaje)
 	{
 		// bordes de la pantalla
-		if (personaje.getX() < 0 || personaje.getX() > entorno.ancho() - personaje.getAncho())
-		{
+		if ((personaje.getX() < 0 && personaje.getVelocidadHorizontal() < 0) || (personaje.getX() + personaje.getAncho() > entorno.ancho() && personaje.getVelocidadHorizontal() > 0)) {
 			if (!personaje.esJugador()) // control automático para los enemigos
 				personaje.setVelocidadHorizontal(personaje.getVelocidadHorizontal() * -1);
 			else
@@ -276,6 +352,13 @@ public class Juego extends InterfaceJuego
 
 	public void procesarColisionVertical(Personaje personaje)
 	{
+		
+		if (personaje.getY() < 0)
+        {
+            personaje.setVelocidadVertical(0);
+            return;
+        }
+		
 		personaje.setSaltando(true);
 		for (int i = 0; i < bloques.length; i++)
 		{
@@ -330,5 +413,26 @@ public class Juego extends InterfaceJuego
 			proyectiles[i].getPadre().setPuedeDisparar(true);
 		}
 		proyectiles[i] = null;
+	}
+
+	public void perder() {
+		System.out.println("-------PERDISTE-------");
+	}
+
+	public void ganar() {
+
+		System.out.println("-------GANASTE-------");
+
+	}
+
+	public void puntaje() {
+		
+		entorno.cambiarFont("times new roman", 20, Color.white);
+		entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
+		
+		entorno.cambiarFont("times new roman", 20, Color.white);
+		entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);
+
+
 	}
 }
