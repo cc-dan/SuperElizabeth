@@ -160,7 +160,7 @@ public class Personaje {
 
 	public Proyectil disparar() {
 		this.puedeDisparar = false;
-		return new Proyectil(this.x, this.y, this.esJugador, this.mirandoDerecha, this, this.entorno);
+		return new Proyectil(this.x + this.ancho, this.y + this.alto / 3, this.esJugador, this.mirandoDerecha, this, this.entorno);
 	}
 
 	////// GETTERS & SETTERS:
