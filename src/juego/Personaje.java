@@ -22,6 +22,9 @@ public class Personaje {
 	private int velocidadSalto = 7;
 	private Entorno entorno;
 	private int contador;
+	private int contProyectil;
+	private int contProyectilActual;
+	
 	//imagenes:
 	private Image mikuquietader;
 	private Image mikuquietaizq;
@@ -53,7 +56,15 @@ public class Personaje {
 		this.esJugador = jugable;
 		this.entorno = entorno;
 		imagenes();
-		this.contador = 0;	}
+		this.contador = 0;
+		
+		if(!this.esJugador)
+			this.contProyectil = 30;
+		else
+			this.contProyectil = 0;	
+		
+		this.contProyectilActual = this.contProyectil;
+		}
 
 	public void dibujarse() {
 		//System.out.println(contador);
@@ -207,6 +218,8 @@ public class Personaje {
 	public Proyectil disparar() {
 		return new Proyectil(this.x + this.ancho, this.y + this.alto / 3, this.esJugador, this.mirandoDerecha, this, this.entorno);
 	}
+	
+	
 
 	////// GETTERS & SETTERS:
 
@@ -241,7 +254,24 @@ public class Personaje {
 	public void setPuedeDisparar(boolean puedeDisparar) {
 		this.puedeDisparar = puedeDisparar;
 	}
+	
+	public int getContProyectil() {
+		return contProyectil;
+	}
 
+	public void setContProyectil(int contProyectil) {
+		this.contProyectil = contProyectil;
+	}
+
+	public int getContProyectilActual() {
+		return contProyectilActual;
+	}
+
+	public void setContProyectilActual(int contProyectilActual) {
+		this.contProyectilActual = contProyectilActual;		
+		if (contProyectilActual < 0)
+			contProyectilActual = 0;
+	}
 
 	public int getVelocidadHorizontal() {
 		return velocidadHorizontal;

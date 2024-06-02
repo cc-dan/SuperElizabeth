@@ -25,7 +25,7 @@ public class Juego extends InterfaceJuego
 	int velocidadJugador = 5;
 	int velocidadEnemigos = 2;
 	float gravedad = 0.1f;
-	
+
 	boolean estado;
 	private Image fondo;
 
@@ -34,12 +34,12 @@ public class Juego extends InterfaceJuego
 	int enemEliminados = 0;
 
 	Gatito gatito;
-	
+
 	int anchoBloque = 32;
 	int altoBloque = 32;
 	int pisos = 4;
 	int bloquesRompiblesPorPiso = 4;
-	
+
 	int enemigosPorPiso = 2;
 	int cantidadEnemigos = enemigosPorPiso * (pisos - 1);
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
@@ -121,7 +121,7 @@ public class Juego extends InterfaceJuego
 			enemigo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = enemigo;*/			
 			//if (i % 2 != 0 )
-				//distanciaEntrePisos += 200;
+			//distanciaEntrePisos += 200;
 		}
 
 		// Inicia el juego!
@@ -172,14 +172,14 @@ public class Juego extends InterfaceJuego
 			jugador.saltar();
 			jugador.setSaltando(true);
 		}
-		
+
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c')) {
 			agregarProyectil(jugador.disparar());
 
 		}
 
 
-		
+
 		//DIBUJAR JUGADOR
 		jugador.dibujarse();
 
@@ -189,8 +189,11 @@ public class Juego extends InterfaceJuego
 		for (int i = 0; i < enemigos.length; i++)
 		{
 			Personaje enemigo = enemigos[i];
+			
 			if (enemigo == null)
 				continue;
+			
+			enemigo.setContProyectilActual(enemigo.getContProyectilActual() - 1);
 
 			enemigos[i].setVelocidadHorizontal(velocidadEnemigos * Integer.signum(enemigos[i].getVelocidadHorizontal()));
 
@@ -201,7 +204,7 @@ public class Juego extends InterfaceJuego
 					enemigos[i].setVelocidadHorizontal(enemigos[i].getVelocidadHorizontal() + 1);
 			}
 
-			if (enemigo.getPuedeDisparar() && !enemigo.estaSaltando())
+			if (enemigo.getContProyectilActual() == 0 && enemigo.getPuedeDisparar() && !enemigo.estaSaltando())
 				agregarProyectil(enemigo.disparar());
 
 			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
@@ -226,13 +229,15 @@ public class Juego extends InterfaceJuego
 
 			// dibujar enemigo
 			
+			//enemigo.dibujarse();
+			
 			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
 					enemigo.getY() + enemigo.getAlto() / 2, 
 					enemigo.getAncho(), 
 					enemigo.getAlto(), 
 					0, 
 					Color.RED);
-
+			 
 			// matar enemigo, desaparecer enemigo y proyectil
 			if (enemigo.getX() < 0 - enemigo.getAncho() || enemigo.getX() > entorno.ancho())
 			{
@@ -241,7 +246,7 @@ public class Juego extends InterfaceJuego
 				matarEnemigo(i);
 				break;
 			}
-			
+
 			for (int j = 0; j < proyectiles.length; j++) 
 			{
 				if(proyectiles[j] == null)
@@ -319,14 +324,14 @@ public class Juego extends InterfaceJuego
 		}
 
 		// DIBUJA GATITO
-//		entorno.dibujarRectangulo(gatito.getX() + gatito.getAncho() / 2, 
-//				gatito.getY() + gatito.getAlto() / 2, 
-//				gatito.getAncho(), 
-//				gatito.getAlto(), 
-//				0, Color.ORANGE);
-		
+		//		entorno.dibujarRectangulo(gatito.getX() + gatito.getAncho() / 2, 
+		//				gatito.getY() + gatito.getAlto() / 2, 
+		//				gatito.getAncho(), 
+		//				gatito.getAlto(), 
+		//				0, Color.ORANGE);
+
 		gatito.dibujarse();
-	
+
 	}
 
 	@SuppressWarnings("unused")
@@ -447,10 +452,15 @@ public class Juego extends InterfaceJuego
 	public void agregarProyectil(Proyectil proyectil) {
 		for (int i = 0; i < this.proyectiles.length; i++) {
 			if(proyectiles[i] == null) {
+				Personaje padre = proyectil.getPadre();				
 				proyectiles[i] = proyectil;
-				proyectil.getPadre().setPuedeDisparar(false);
+				padre.setPuedeDisparar(false);
+				padre.setContProyectilActual(padre.getContProyectil());
+				System.out.println(padre.getContProyectil());
+				System.out.println(padre.getContProyectilActual());
 				return;
 			}
+			
 		}
 	}
 
@@ -474,7 +484,7 @@ public class Juego extends InterfaceJuego
 				jugador.getY(),
 				jugador.getAncho(),
 				jugador.getAlto())){
-			
+
 			System.out.println("-------GANASTE-------");
 			estado = true;
 		}
@@ -491,8 +501,7 @@ public class Juego extends InterfaceJuego
 
 	}/*
 	public void temporizador() {
-
-<<<<<<< HEAD
+	
 		Timer timer = new Timer();
 
 		//Personaje enemigo = enemigos[cantidadEnemigos];
@@ -509,14 +518,14 @@ public class Juego extends InterfaceJuego
 		// tarea, ejecucion, intervalo de tiempo
 		timer.schedule(tarea, 0, 3000);
 	}*/
-	
-	
+
+
 	void matarEnemigo(int index)
 	{
 		enemigos[index] = null;
 		agregarEnemigo(index);
 	}
-	
+
 	void agregarEnemigo(int index)
 	{
 		for (int i = 0; i < pisos; i++)
@@ -533,7 +542,7 @@ public class Juego extends InterfaceJuego
 				}
 				//System.out.println("enemigo " + x + " (" + enemigos[x].getY() + ") está en este piso");
 				cantidadEnemigos++;
-				
+
 				for (int j = 0; j < enemigos.length; j++)
 				{
 					if (j == x || enemigos[j] == null) continue;
@@ -566,7 +575,7 @@ public class Juego extends InterfaceJuego
 			}
 		}
 	}
-	
+
 	boolean estaEnPiso(int nivel, Personaje p)
 	{
 		int techo = nivel * distanciaEntrePisos;
