@@ -13,19 +13,16 @@ public class Personaje {
 	private float velocidadVertical;
 	private int ancho;
 	private int alto;
-	//private boolean saltando = false;
 	private boolean saltando;
 	private boolean mirandoDerecha = true;
-	//private boolean enMovimiento = false;
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
 	private int velocidadSalto = 7;
 	private Entorno entorno;
 	private int contador;
 	private int contProyectil;
-	private int contProyectilActual;
-	
-	//imagenes:
+	private int contProyectilActual;	
+
 	private Image mikuquietader;
 	private Image mikuquietaizq;
 	private Image mikusaltoder;
@@ -46,31 +43,25 @@ public class Personaje {
 	{
 		this.x = x;
 		this.y = y;
-//		if(jugable) {
-//			this.velocidadHorizontal = 0;
-//		} else if (!jugable){
-//			this.velocidadHorizontal = 0;
-//		}
 		this.ancho = 32;
 		this.alto = 64;
 		this.esJugador = jugable;
 		this.entorno = entorno;
 		imagenes();
 		this.contador = 0;
-		
+
 		if(!this.esJugador)
 			this.contProyectil = 100;
 		else
 			this.contProyectil = 0;	
-		
+
 		this.contProyectilActual = this.contProyectil;
-		}
+	}
 
 	public void dibujarse() {
-		//System.out.println(contador);
-		
+
 		if(mirandoDerecha) {
-			if(esJugador) { //dibujo jugador
+			if(esJugador) { // dibujo jugador
 				if(saltando) {
 					entorno.dibujarImagen(this.mikusaltoder, this.x + 15, this.y+25, 0, 0.2);
 				}
@@ -85,18 +76,16 @@ public class Personaje {
 					}
 					if(contador >= 10 && contador <= 20) {
 						entorno.dibujarImagen(this.miku2der, this.x + 15, this.y+25, 0, 0.2);
-						contador ++;
-	
+						contador ++;	
 					}
 					if(contador >= 20 && contador <= 30) {
 						entorno.dibujarImagen(this.miku3der, this.x + 15, this.y+25, 0, 0.2);
-						contador ++;
-	
+						contador ++;	
 					}
 					if(contador >= 30)
 						contador = 0;
 				}		
-			} else { //dibujo enemigo
+			} else { // dibujo enemigo
 				contador++;
 				if(contador <= 10) {
 					entorno.dibujarImagen(this.enemigo1der, this.x + 15, this.y + 25, 0, 0.15);
@@ -105,16 +94,13 @@ public class Personaje {
 				if(contador >= 10 && contador <= 20) {
 					entorno.dibujarImagen(this.enemigo2der, this.x + 15, this.y + 25, 0, 0.15);
 					contador ++;
-
 				}
 				if(contador >= 20)
-					contador = 0;
-				
+					contador = 0;				
 			}
 		}	
-
 		if(!mirandoDerecha) {
-			if(esJugador) { //dibujo jugador
+			if(esJugador) { // dibujo jugador
 				if(saltando) {
 					entorno.dibujarImagen(this.mikusaltoizq, this.x + 15, this.y + 25, 0, 0.2);
 				}
@@ -129,19 +115,17 @@ public class Personaje {
 					}
 					if(contador >= 10 && contador <= 20) {
 						entorno.dibujarImagen(this.miku2izq, this.x + 15, this.y + 25, 0, 0.2);
-						contador ++;
-	
+						contador ++;	
 					}
 					if(contador >= 20 && contador <= 30) {
 						entorno.dibujarImagen(this.miku3izq, this.x + 15, this.y + 25, 0, 0.2);
-						contador ++;
-	
+						contador ++;	
 					}
 					if(contador >= 30)
 						contador = 0;
-	
+
 				}
-			} else { //dibujo enemigo
+			} else { // dibujo enemigo
 				if(saltando) {
 					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 25, 0, 0.15);
 				}
@@ -178,105 +162,76 @@ public class Personaje {
 		this.enemigo2izq = Herramientas.cargarImagen("enemigo.2.izq.png");	
 
 	}
-
 	public void moverHorizontal() 
 	{
 		this.x += this.velocidadHorizontal;
-
 	}
-
-
-	//	public void mostrarX() {
-	//		System.out.println(this.x);
-	//	}
-	//	
 	public void moverVertical()
 	{
 		this.y += Math.ceil(this.velocidadVertical); // siempre que velocidadVertical sea mayor a 0 se debería ver modificada la posición vertical
 	}
-
 	public void saltar() {
 		this.velocidadVertical = -velocidadSalto;
 	}
-
-
 	public boolean mirandoALaDerecha()
 	{
 		return this.mirandoDerecha;
 	}
-
 	public boolean estaSaltando()
 	{
 		return this.saltando;
 	}
-
 	public boolean esJugador()
 	{
 		return this.esJugador;
 	}
-
 	public Proyectil disparar() {
 		return new Proyectil(this.x + this.ancho, this.y + this.alto / 3, this.esJugador, this.mirandoDerecha, this, this.entorno);
 	}
-	
-	
 
 	////// GETTERS & SETTERS:
 
 	public int getX() {
 		return x;
 	}
-
 	public void setX(int x) {
 		this.x = x;
 	}
-
 	public int getY() {
 		return y;
 	}
-
 	public void setY(int y) {
 		this.y = y;
 	}
-
 	public int getAncho() {
 		return ancho;
 	}
-
 	public int getAlto() {
 		return alto;
 	}
-
 	public boolean getPuedeDisparar() {
 		return this.puedeDisparar;
 	}
-
 	public void setPuedeDisparar(boolean puedeDisparar) {
 		this.puedeDisparar = puedeDisparar;
-	}
-	
+	}	
 	public int getContProyectil() {
 		return contProyectil;
 	}
-
 	public void setContProyectil(int contProyectil) {
 		this.contProyectil = contProyectil;
 	}
-
 	public int getContProyectilActual() {
 		return contProyectilActual;
 	}
-
 	public void setContProyectilActual(int contProyectilActual) {
 		this.contProyectilActual = contProyectilActual;		
 		if (this.contProyectilActual < 0)
 			this.contProyectilActual = 0;
 	}
-
 	public int getVelocidadHorizontal() {
 		return velocidadHorizontal;
 	}
-
 	public void setVelocidadHorizontal(int velocidad) {
 		this.velocidadHorizontal = velocidad;
 		if(velocidad > 0) {
@@ -285,42 +240,27 @@ public class Personaje {
 			this.mirandoDerecha = false;
 		}
 	}
-
 	public float getVelocidadVertical()
 	{
 		return this.velocidadVertical;
 	}
-
 	public void setVelocidadVertical(float velocidad)
 	{
 		this.velocidadVertical = velocidad;
 	}
-
-
 	public void setMirandoALaDerecha(boolean b)
 	{
 		this.mirandoDerecha = b;
 	}
-
 	public void setSaltando(boolean b)
 	{
 		this.saltando = b;
 	}
-
 	public boolean enMovimiento() {
 		return this.velocidadHorizontal != 0;
 	}
-	
-	//public void setEnMovimiento(boolean x) {
-	//	this.enMovimiento = x;
-	//}
-
 	public void cambiarSentido()
 	{
 		this.velocidadHorizontal = -1 * this.velocidadHorizontal;
 	}
-
-	// IMAGENES
-
-
 }

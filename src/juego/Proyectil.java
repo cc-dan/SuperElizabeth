@@ -1,7 +1,6 @@
 package juego;
 
 import java.awt.Image;
-
 import entorno.Entorno;
 import entorno.Herramientas;
 
@@ -16,7 +15,7 @@ public class Proyectil {
 	private Personaje padre;
 	private int contador;
 	private Entorno entorno;
-	//imagenes
+
 	private Image proyectilDer;
 	private Image proyectilIzq;
 	private Image proyectilEnem1;
@@ -32,9 +31,9 @@ public class Proyectil {
 		this.inofensivo = inofensivo;
 		if(inofensivo == true) {
 			this.velocidad = 7;
-			} else {
-				this.velocidad = 5;
-			}
+		} else {
+			this.velocidad = 5;
+		}
 		this.mirandoDerecha = derecha;
 		this.padre = padre;
 		this.entorno = entorno;
@@ -48,28 +47,27 @@ public class Proyectil {
 			if(!mirandoDerecha)
 				entorno.dibujarImagen(this.proyectilIzq, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 2);
 		}
-		
+
 		if(!inofensivo) {
-				contador ++;
-				if(contador <= 20) {
+			contador ++;
+			if(contador <= 20) {
 				entorno.dibujarImagen(this.proyectilEnem1, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
 				contador++;
-				}
-				if(contador >= 20 && contador <= 40) {
-					entorno.dibujarImagen(this.proyectilEnem2, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
-					contador ++;
-				}
-				if(contador >= 40 && contador <= 60) {
-					entorno.dibujarImagen(this.proyectilEnem3, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
-					contador ++;
-				}
-				if(contador >= 60 && contador <= 80) {
-					entorno.dibujarImagen(this.proyectilEnem4, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
-					contador ++;
-				}
-				if(contador >= 80)
-					contador = 0;
-						
+			}
+			if(contador >= 20 && contador <= 40) {
+				entorno.dibujarImagen(this.proyectilEnem2, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+				contador ++;
+			}
+			if(contador >= 40 && contador <= 60) {
+				entorno.dibujarImagen(this.proyectilEnem3, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+				contador ++;
+			}
+			if(contador >= 60 && contador <= 80) {
+				entorno.dibujarImagen(this.proyectilEnem4, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+				contador ++;
+			}
+			if(contador >= 80)
+				contador = 0;
 		}
 	}
 
