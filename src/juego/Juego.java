@@ -145,16 +145,16 @@ public class Juego extends InterfaceJuego
 
 		if (entorno.estaPresionada(entorno.TECLA_DERECHA)) {
 			jugador.setVelocidadHorizontal(velocidadJugador);
-			jugador.setEnMovimiento(true);
+			//jugador.setEnMovimiento(true);
 		}
 		else if (entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
 			jugador.setVelocidadHorizontal(-velocidadJugador);
-			jugador.setEnMovimiento(true);
+			//jugador.setEnMovimiento(true);
 		}
 		else {
 			jugador.setVelocidadHorizontal(0);
 
-			jugador.setEnMovimiento(false);
+			//jugador.setEnMovimiento(false);
 		}		
 		jugador.moverHorizontal();
 		procesarColisionHorizontal(jugador);
@@ -424,16 +424,18 @@ public class Juego extends InterfaceJuego
 				}
 
 				// destrucción de bloques
-				if (personaje.getVelocidadVertical() < 0 && bloque.esRompible()){
+				if (/*personaje.getVelocidadVertical() < 0*/personaje.getY() > bloque.getY() && bloque.esRompible()){
 					bloque.guardarPosicion(bloque.getX(), bloque.getY());
 
 					bloques[i] = null;
 
 					bloque.setSeRompio(true);
 				}
+				else if (personaje.getY() < bloque.getY())
+					personaje.setSaltando(false);
 
 				personaje.setVelocidadVertical(0);
-				personaje.setSaltando(false);
+				//personaje.setSaltando(false);
 
 			}
 

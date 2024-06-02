@@ -16,7 +16,7 @@ public class Personaje {
 	//private boolean saltando = false;
 	private boolean saltando;
 	private boolean mirandoDerecha = true;
-	private boolean enMovimiento = false;
+	//private boolean enMovimiento = false;
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
 	private int velocidadSalto = 7;
@@ -54,7 +54,7 @@ public class Personaje {
 			if(saltando) {
 				entorno.dibujarImagen(this.mikusaltoder, this.x + 15, this.y+25, 0, 0.2);
 			}
-			else if(!enMovimiento) {
+			else if(!this.enMovimiento()) {
 				entorno.dibujarImagen(this.mikuquietader, this.x + 15, this.y+25, 0, 0.2);
 			}
 			else{
@@ -82,7 +82,7 @@ public class Personaje {
 			if(saltando) {
 				entorno.dibujarImagen(this.mikusaltoizq, this.x + 15, this.y + 25, 0, 0.2);
 			}
-			else if(!enMovimiento) {
+			else if(!this.enMovimiento()) {
 				entorno.dibujarImagen(this.mikuquietaizq, this.x + 15, this.y + 25, 0, 0.2);
 			}
 			else{
@@ -231,10 +231,13 @@ public class Personaje {
 		this.saltando = b;
 	}
 
-
-	public void setEnMovimiento(boolean x) {
-		this.enMovimiento = x;
+	public boolean enMovimiento() {
+		return this.velocidadHorizontal != 0;
 	}
+	
+	//public void setEnMovimiento(boolean x) {
+	//	this.enMovimiento = x;
+	//}
 
 	public void cambiarSentido()
 	{
