@@ -26,7 +26,9 @@ public class Juego extends InterfaceJuego
 	int velocidadEnemigos = 2;
 	float gravedad = 0.1f;
 
-	boolean estado;
+	boolean sePerdio;
+	boolean seGano;
+	
 	private Image fondo;
 
 	// PUNTAJE
@@ -106,8 +108,8 @@ public class Juego extends InterfaceJuego
 		int indiceEnemigos = 0;
 		for (int i = 0; i < pisos - 1; i++)
 		{
-			Personaje a = new Personaje(this.entorno.ancho() / 2, distanciaEntrePisos * i + distanciaEntrePisos, false, entorno);
-			Personaje b = new Personaje(this.entorno.ancho() / 2, distanciaEntrePisos * i + distanciaEntrePisos, false, entorno);
+			Personaje a = new Personaje(this.entorno.ancho() / 2, distanciaEntrePisos * i + distanciaEntrePisos + 32, false, entorno);
+			Personaje b = new Personaje(this.entorno.ancho() / 2, distanciaEntrePisos * i + distanciaEntrePisos + 32, false, entorno);
 			a.setY(a.getY() - a.getAlto() * 2);
 			a.setVelocidadHorizontal(-velocidadEnemigos);
 			b.setY(b.getY() - b.getAlto() * 2);
@@ -139,6 +141,12 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
+		
+		if(seGano || sePerdio) {			
+			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
+			puntaje();
+			return;
+		}
 
 		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
 
@@ -183,8 +191,16 @@ public class Juego extends InterfaceJuego
 		//DIBUJAR JUGADOR
 		jugador.dibujarse();
 
-
-		ganar();
+		if(colision(gatito.getX(), 
+				gatito.getY(), 
+				gatito.getAncho(),
+				gatito.getAlto(),
+				jugador.getX(),
+				jugador.getY(),
+				jugador.getAncho(),
+				jugador.getAlto()))
+			
+			ganar();
 
 		for (int i = 0; i < enemigos.length; i++)
 		{
@@ -229,15 +245,15 @@ public class Juego extends InterfaceJuego
 
 			// dibujar enemigo
 			
-			//enemigo.dibujarse();
-			
+			enemigo.dibujarse();
+			/*
 			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
 					enemigo.getY() + enemigo.getAlto() / 2, 
 					enemigo.getAncho(), 
 					enemigo.getAlto(), 
 					0, 
 					Color.RED);
-			 
+			 */
 			// matar enemigo, desaparecer enemigo y proyectil
 			if (enemigo.getX() < 0 - enemigo.getAncho() || enemigo.getX() > entorno.ancho())
 			{
@@ -456,8 +472,6 @@ public class Juego extends InterfaceJuego
 				proyectiles[i] = proyectil;
 				padre.setPuedeDisparar(false);
 				padre.setContProyectilActual(padre.getContProyectil());
-				System.out.println(padre.getContProyectil());
-				System.out.println(padre.getContProyectilActual());
 				return;
 			}
 			
@@ -465,39 +479,37 @@ public class Juego extends InterfaceJuego
 	}
 
 	public void eliminarProyectil(int i) {
-		if(proyectiles[i].getPadre() != null) {
+		if(proyectiles[i] != null && proyectiles[i].getPadre() != null) {
 			proyectiles[i].getPadre().setPuedeDisparar(true);
 		}
 		proyectiles[i] = null;
 	}
 
 	public void perder() {
-		System.out.println("-------PERDISTE-------");
+		
+		sePerdio = true;
 	}
 
-	public void ganar() {
-		if(colision(gatito.getX(), 
-				gatito.getY(), 
-				gatito.getAncho(),
-				gatito.getAlto(),
-				jugador.getX(),
-				jugador.getY(),
-				jugador.getAncho(),
-				jugador.getAlto())){
-
-			System.out.println("-------GANASTE-------");
-			estado = true;
-		}
-
+	public void ganar() {		
+		seGano = true;		
 	}
 
 	public void puntaje() {
+		
+		if (seGano || sePerdio) {
+			entorno.cambiarFont("times new roman", 50, Color.white);
+			entorno.escribirTexto("PUNTAJE = " + puntaje, 200 , 320);
 
-		entorno.cambiarFont("times new roman", 20, Color.white);
-		entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
-
-		entorno.cambiarFont("times new roman", 20, Color.white);
-		entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);
+			entorno.cambiarFont("times new roman", 50, Color.white);
+			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 200 , 370);
+			
+		}else {
+			entorno.cambiarFont("times new roman", 20, Color.white);
+			entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
+			
+			entorno.cambiarFont("times new roman", 20, Color.white);
+			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);			
+		}
 
 	}
 	
@@ -546,7 +558,7 @@ public class Juego extends InterfaceJuego
 					if (enemigos[x] == null)
 					{
 						boolean mirandoDerecha = new Random().nextBoolean();
-						Personaje e = new Personaje(mirandoDerecha? 0 : this.entorno.ancho() - 32, distanciaEntrePisos * i + distanciaEntrePisos, false, entorno);
+						Personaje e = new Personaje(mirandoDerecha? 0 : this.entorno.ancho() - 32, distanciaEntrePisos * i + distanciaEntrePisos + 32, false, entorno);
 						e.setY(e.getY() - e.getAlto() * 2);
 						e.setVelocidadHorizontal(mirandoDerecha? velocidadEnemigos : -velocidadEnemigos);
 						enemigos[x] = e;
