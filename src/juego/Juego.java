@@ -1,10 +1,13 @@
 package juego;
 
-//import java.util.Timer;
-//import java.util.TimerTask;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Color;
+import java.util.Date;
 import java.util.Random;
 import java.awt.Image;
+import java.sql.Time;
+
 import entorno.Entorno;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
@@ -20,12 +23,12 @@ public class Juego extends InterfaceJuego
 	Proyectil proyectiles[];
 	Bloque bloques[];
 	int velocidadJugador = 5;
-	int velocidadEnemigos = 3;
+	int velocidadEnemigos = 2;
 	float gravedad = 0.1f;
 	
 	boolean estado;
 	private Image fondo;
-	
+
 	// PUNTAJE
 	int puntaje = 0;
 	int enemEliminados = 0;
@@ -58,7 +61,8 @@ public class Juego extends InterfaceJuego
 
 		this.fondo = Herramientas.cargarImagen("fondo2.png");
 
-		//Timer timer = new Timer();
+		// prueba temporizador
+
 
 		// crear nivel
 		//int anchoBloque = 32;
@@ -112,6 +116,7 @@ public class Juego extends InterfaceJuego
 			enemigos[indiceEnemigos + 1] = b;
 			indiceEnemigos += 2;
 			/*Personaje enemigo = new Personaje(this.entorno.ancho() / 2, 0, false, entorno);
+>>>>>>> 036cdd61243a11f6a0829b75d3caa1b6719132f2
 			enemigo.setX(500 + enemigo.getAncho() * i);
 			enemigo.setVelocidadHorizontal(velocidadEnemigos * ((i % 2 == 0)? 1 : -1));
 			enemigos[i] = enemigo;*/			
@@ -134,9 +139,9 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-		
+
 		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
-		
+
 		puntaje();
 
 		// MOVIMIENTO JUGADOR:
@@ -167,9 +172,13 @@ public class Juego extends InterfaceJuego
 			jugador.saltar();
 			jugador.setSaltando(true);
 		}
-
-		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
+		
+		if (jugador.getPuedeDisparar() && entorno.sePresiono('c')) {
 			agregarProyectil(jugador.disparar());
+
+		}
+
+
 		
 		//DIBUJAR JUGADOR
 		jugador.dibujarse();
@@ -182,17 +191,17 @@ public class Juego extends InterfaceJuego
 			Personaje enemigo = enemigos[i];
 			if (enemigo == null)
 				continue;
-			
-			enemigos[i].setVelocidadHorizontal(velocidadEnemigos * Integer.signum(enemigos[i].getVelocidadHorizontal()));
-			
-			for (Personaje e : enemigos)
-            {
-                if (e == null || e == enemigos[i]) break;
-                if (colision(e.getX(), e.getY(), e.getAncho(), e.getAlto(), enemigos[i].getX(), enemigos[i].getY(), enemigos[i].getAncho(), enemigos[i].getAlto()))
-                    enemigos[i].setVelocidadHorizontal(enemigos[i].getVelocidadHorizontal() + 1);
-            }
 
-			if (enemigo.getPuedeDisparar())
+			enemigos[i].setVelocidadHorizontal(velocidadEnemigos * Integer.signum(enemigos[i].getVelocidadHorizontal()));
+
+			for (Personaje e : enemigos)
+			{
+				if (e == null || e == enemigos[i]) break;
+				if (colision(e.getX(), e.getY(), e.getAncho(), e.getAlto(), enemigos[i].getX(), enemigos[i].getY(), enemigos[i].getAncho(), enemigos[i].getAlto()))
+					enemigos[i].setVelocidadHorizontal(enemigos[i].getVelocidadHorizontal() + 1);
+			}
+
+			if (enemigo.getPuedeDisparar() && !enemigo.estaSaltando())
 				agregarProyectil(enemigo.disparar());
 
 			enemigo.setVelocidadVertical(enemigo.getVelocidadVertical() + gravedad);
@@ -324,11 +333,11 @@ public class Juego extends InterfaceJuego
 	public static void main(String[] args)
 	{
 		Juego juego = new Juego();
-		
+
 		/*Juego juego;
 		if(!perder() || !ganar())
 			juego = new Juego();
-			*/
+		 */
 	}
 
 	public boolean colision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
@@ -386,13 +395,13 @@ public class Juego extends InterfaceJuego
 
 	public void procesarColisionVertical(Personaje personaje)
 	{
-		
+
 		if (personaje.getY() < 0)
-        {
-            personaje.setVelocidadVertical(0);
-            return;
-        }
-		
+		{
+			personaje.setVelocidadVertical(0);
+			return;
+		}
+
 		personaje.setSaltando(true);
 		for (int i = 0; i < bloques.length; i++)
 		{
@@ -473,15 +482,34 @@ public class Juego extends InterfaceJuego
 	}
 
 	public void puntaje() {
-		
+
 		entorno.cambiarFont("times new roman", 20, Color.white);
 		entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
-		
+
 		entorno.cambiarFont("times new roman", 20, Color.white);
 		entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);
 
+	}/*
+	public void temporizador() {
 
-	}
+<<<<<<< HEAD
+		Timer timer = new Timer();
+
+		//Personaje enemigo = enemigos[cantidadEnemigos];
+
+		TimerTask tarea = new TimerTask() {
+
+			@Override
+			public void run() {
+
+				System.out.println("La tarea se ejecuto en: " + new Date());	
+
+			}			
+		};
+		// tarea, ejecucion, intervalo de tiempo
+		timer.schedule(tarea, 0, 3000);
+	}*/
+	
 	
 	void matarEnemigo(int index)
 	{
