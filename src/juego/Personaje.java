@@ -16,7 +16,7 @@ public class Personaje {
 	//private boolean saltando = false;
 	private boolean saltando;
 	private boolean mirandoDerecha = true;
-	private boolean enMovimiento = false;
+	//private boolean enMovimiento = false;
 	private boolean esJugador = false;
 	private boolean puedeDisparar = true;
 	private int velocidadSalto = 7;
@@ -33,14 +33,21 @@ public class Personaje {
 	private Image miku2izq;
 	private Image miku3der;
 	private Image miku3izq;
-	private Image enemigo;
+	private Image enemigo1der;
+	private Image enemigo1izq;
+	private Image enemigo2der;
+	private Image enemigo2izq;
 
 
 	public Personaje(int x, int y, boolean jugable, Entorno entorno) 
 	{
 		this.x = x;
 		this.y = y;
-		this.velocidadHorizontal = 5;
+//		if(jugable) {
+//			this.velocidadHorizontal = 0;
+//		} else if (!jugable){
+//			this.velocidadHorizontal = 0;
+//		}
 		this.ancho = 32;
 		this.alto = 64;
 		this.esJugador = jugable;
@@ -50,60 +57,95 @@ public class Personaje {
 
 	public void dibujarse() {
 		//System.out.println(contador);
+		
 		if(mirandoDerecha) {
-			if(saltando) {
-				entorno.dibujarImagen(this.mikusaltoder, this.x + 15, this.y+25, 0, 0.2);
-			}
-			else if(!enMovimiento) {
-				entorno.dibujarImagen(this.mikuquietader, this.x + 15, this.y+25, 0, 0.2);
-			}
-			else{
-				contador ++;
+			if(esJugador) { //dibujo jugador
+				if(saltando) {
+					entorno.dibujarImagen(this.mikusaltoder, this.x + 15, this.y+25, 0, 0.2);
+				}
+				else if(!this.enMovimiento()) {
+					entorno.dibujarImagen(this.mikuquietader, this.x + 15, this.y+25, 0, 0.2);
+				}
+				else{
+					contador ++;
+					if(contador <= 10) {
+						entorno.dibujarImagen(this.miku1der, this.x + 15, this.y+25, 0, 0.2);
+						contador ++;
+					}
+					if(contador >= 10 && contador <= 20) {
+						entorno.dibujarImagen(this.miku2der, this.x + 15, this.y+25, 0, 0.2);
+						contador ++;
+	
+					}
+					if(contador >= 20 && contador <= 30) {
+						entorno.dibujarImagen(this.miku3der, this.x + 15, this.y+25, 0, 0.2);
+						contador ++;
+	
+					}
+					if(contador >= 30)
+						contador = 0;
+				}		
+			} else { //dibujo enemigo
+				contador++;
 				if(contador <= 10) {
-					entorno.dibujarImagen(this.miku1der, this.x + 15, this.y+25, 0, 0.2);
+					entorno.dibujarImagen(this.enemigo1der, this.x + 15, this.y + 25, 0, 1);
 					contador ++;
 				}
 				if(contador >= 10 && contador <= 20) {
-					entorno.dibujarImagen(this.miku2der, this.x + 15, this.y+25, 0, 0.2);
+					entorno.dibujarImagen(this.enemigo2der, this.x + 15, this.y + 25, 0, 1);
 					contador ++;
 
 				}
-				if(contador >= 20 && contador <= 30) {
-					entorno.dibujarImagen(this.miku3der, this.x + 15, this.y+25, 0, 0.2);
-					contador ++;
-
-				}
-				if(contador >= 30)
+				if(contador >= 20)
 					contador = 0;
-			}		
-		}
+				
+			}
+		}	
 
 		if(!mirandoDerecha) {
-			if(saltando) {
-				entorno.dibujarImagen(this.mikusaltoizq, this.x + 15, this.y + 25, 0, 0.2);
-			}
-			else if(!enMovimiento) {
-				entorno.dibujarImagen(this.mikuquietaizq, this.x + 15, this.y + 25, 0, 0.2);
-			}
-			else{
-				contador ++;
+			if(esJugador) { //dibujo jugador
+				if(saltando) {
+					entorno.dibujarImagen(this.mikusaltoizq, this.x + 15, this.y + 25, 0, 0.2);
+				}
+				else if(!this.enMovimiento()) {
+					entorno.dibujarImagen(this.mikuquietaizq, this.x + 15, this.y + 25, 0, 0.2);
+				}
+				else{
+					contador ++;
+					if(contador <= 10) {
+						entorno.dibujarImagen(this.miku1izq, this.x + 15, this.y + 25, 0, 0.2);
+						contador ++;
+					}
+					if(contador >= 10 && contador <= 20) {
+						entorno.dibujarImagen(this.miku2izq, this.x + 15, this.y + 25, 0, 0.2);
+						contador ++;
+	
+					}
+					if(contador >= 20 && contador <= 30) {
+						entorno.dibujarImagen(this.miku3izq, this.x + 15, this.y + 25, 0, 0.2);
+						contador ++;
+	
+					}
+					if(contador >= 30)
+						contador = 0;
+	
+				}
+			} else { //dibujo enemigo
+				if(saltando) {
+					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 25, 0, 0.2);
+				}
+				contador++;
 				if(contador <= 10) {
-					entorno.dibujarImagen(this.miku1izq, this.x + 15, this.y + 25, 0, 0.2);
+					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 25, 0, 0.2);
 					contador ++;
 				}
 				if(contador >= 10 && contador <= 20) {
-					entorno.dibujarImagen(this.miku2izq, this.x + 15, this.y + 25, 0, 0.2);
+					entorno.dibujarImagen(this.enemigo2izq, this.x + 15, this.y + 25, 0, 0.2);
 					contador ++;
 
 				}
-				if(contador >= 20 && contador <= 30) {
-					entorno.dibujarImagen(this.miku3izq, this.x + 15, this.y + 25, 0, 0.2);
-					contador ++;
-
-				}
-				if(contador >= 30)
+				if(contador >= 20)
 					contador = 0;
-
 			}
 		}
 	}
@@ -118,7 +160,11 @@ public class Personaje {
 		this.miku2der = Herramientas.cargarImagen("miku.2.der.png");
 		this.miku2izq = Herramientas.cargarImagen("miku.2.izq.png");
 		this.miku3der = Herramientas.cargarImagen("miku.3.der.png");
-		this.miku3izq= Herramientas.cargarImagen("miku.3.izq.png");
+		this.miku3izq = Herramientas.cargarImagen("miku.3.izq.png");
+		this.enemigo1der = Herramientas.cargarImagen("enemigo.1.der.png");
+		this.enemigo1izq = Herramientas.cargarImagen("enemigo.1.izq.png");
+		this.enemigo2der = Herramientas.cargarImagen("enemigo.2.der.png");
+		this.enemigo2izq = Herramientas.cargarImagen("enemigo.2.izq.png");	
 
 	}
 
@@ -159,8 +205,7 @@ public class Personaje {
 	}
 
 	public Proyectil disparar() {
-		this.puedeDisparar = false;
-		return new Proyectil(this.x, this.y, this.esJugador, this.mirandoDerecha, this, this.entorno);
+		return new Proyectil(this.x + this.ancho, this.y + this.alto / 3, this.esJugador, this.mirandoDerecha, this, this.entorno);
 	}
 
 	////// GETTERS & SETTERS:
@@ -232,10 +277,13 @@ public class Personaje {
 		this.saltando = b;
 	}
 
-
-	public void setEnMovimiento(boolean x) {
-		this.enMovimiento = x;
+	public boolean enMovimiento() {
+		return this.velocidadHorizontal != 0;
 	}
+	
+	//public void setEnMovimiento(boolean x) {
+	//	this.enMovimiento = x;
+	//}
 
 	public void cambiarSentido()
 	{
