@@ -499,27 +499,8 @@ public class Juego extends InterfaceJuego
 		entorno.cambiarFont("times new roman", 20, Color.white);
 		entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);
 
-	}/*
-	public void temporizador() {
+	}
 	
-		Timer timer = new Timer();
-
-		//Personaje enemigo = enemigos[cantidadEnemigos];
-
-		TimerTask tarea = new TimerTask() {
-
-			@Override
-			public void run() {
-
-				System.out.println("La tarea se ejecuto en: " + new Date());	
-
-			}			
-		};
-		// tarea, ejecucion, intervalo de tiempo
-		timer.schedule(tarea, 0, 3000);
-	}*/
-
-
 	void matarEnemigo(int index)
 	{
 		enemigos[index] = null;

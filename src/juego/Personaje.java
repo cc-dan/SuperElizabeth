@@ -59,7 +59,7 @@ public class Personaje {
 		this.contador = 0;
 		
 		if(!this.esJugador)
-			this.contProyectil = 30;
+			this.contProyectil = 100;
 		else
 			this.contProyectil = 0;	
 		
@@ -269,8 +269,8 @@ public class Personaje {
 
 	public void setContProyectilActual(int contProyectilActual) {
 		this.contProyectilActual = contProyectilActual;		
-		if (contProyectilActual < 0)
-			contProyectilActual = 0;
+		if (this.contProyectilActual < 0)
+			this.contProyectilActual = 0;
 	}
 
 	public int getVelocidadHorizontal() {
