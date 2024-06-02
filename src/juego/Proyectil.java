@@ -58,20 +58,8 @@ public class Proyectil {
 		return x;
 	}
 
-	public void setX(int x) {
-		this.x = x;
-	}
-
 	public int getY() {
 		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getVelocidad() {
-		return velocidad;
 	}
 
 	public void setVelocidad(int velocidad) {
@@ -83,33 +71,16 @@ public class Proyectil {
 		}
 	}
 
-	public boolean mirandoALaDerecha()
-	{
-		return mirandoDerecha;
-	}
-
 	public int getAncho() {
 		return ancho;
-	}
-
-	public void setAncho(int ancho) {
-		this.ancho = ancho;
 	}
 
 	public int getAlto() {
 		return alto;
 	}
 
-	public void setAlto(int alto) {
-		this.alto = alto;
-	}
-
 	public boolean isInofensivo() {
 		return inofensivo;
-	}
-
-	public void setInofensivo(boolean inofensivo) {
-		this.inofensivo = inofensivo;
 	}
 
 	public Personaje getPadre() {
