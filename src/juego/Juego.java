@@ -23,7 +23,7 @@ public class Juego extends InterfaceJuego
 	int velocidadEnemigos = 3;
 	float gravedad = 0.1f;
 	
-	
+	boolean estado;
 	private Image fondo;
 	
 	// PUNTAJE
@@ -170,24 +170,12 @@ public class Juego extends InterfaceJuego
 
 		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
-
+		
+		//DIBUJAR JUGADOR
 		jugador.dibujarse();
 
 
-		// OPCIONAL
-		if (colision(gatito.getX(), 
-				gatito.getY(), 
-				gatito.getAncho(),
-				gatito.getAlto(),
-				jugador.getX(),
-				jugador.getY(),
-				jugador.getAncho(),
-				jugador.getAlto())){
-
-			ganar();
-
-
-		}
+		ganar();
 
 		for (int i = 0; i < enemigos.length; i++)
 		{
@@ -228,6 +216,7 @@ public class Juego extends InterfaceJuego
 			}
 
 			// dibujar enemigo
+			
 			entorno.dibujarRectangulo(enemigo.getX() + enemigo.getAncho() / 2, 
 					enemigo.getY() + enemigo.getAlto() / 2, 
 					enemigo.getAncho(), 
@@ -321,11 +310,14 @@ public class Juego extends InterfaceJuego
 		}
 
 		// DIBUJA GATITO
-		entorno.dibujarRectangulo(gatito.getX() + gatito.getAncho() / 2, 
-				gatito.getY() + gatito.getAlto() / 2, 
-				gatito.getAncho(), 
-				gatito.getAlto(), 
-				0, Color.ORANGE);
+//		entorno.dibujarRectangulo(gatito.getX() + gatito.getAncho() / 2, 
+//				gatito.getY() + gatito.getAlto() / 2, 
+//				gatito.getAncho(), 
+//				gatito.getAlto(), 
+//				0, Color.ORANGE);
+		
+		gatito.dibujarse();
+	
 	}
 
 	@SuppressWarnings("unused")
@@ -465,8 +457,18 @@ public class Juego extends InterfaceJuego
 	}
 
 	public void ganar() {
-
-		System.out.println("-------GANASTE-------");
+		if(colision(gatito.getX(), 
+				gatito.getY(), 
+				gatito.getAncho(),
+				gatito.getAlto(),
+				jugador.getX(),
+				jugador.getY(),
+				jugador.getAncho(),
+				jugador.getAlto())){
+			
+			System.out.println("-------GANASTE-------");
+			estado = true;
+		}
 
 	}
 

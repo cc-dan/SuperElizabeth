@@ -12,7 +12,12 @@ public class Gatito {
 	private Entorno entorno;
 	private int contador; // se va usar para animacion
 	//imagenes:
-	private Image gatitoSprite;
+	private Image gatito1;
+	private Image gatito2;
+	private Image gatito3;
+	private Image gatito4;
+	private Image gatito5;
+	private Image gatito6;
 
 	public Gatito(int x, int y, int ancho, int alto, Entorno entorno) {
 		this.x = x;
@@ -20,11 +25,33 @@ public class Gatito {
 		this.ancho = ancho;
 		this.alto = alto;
 		this.entorno = entorno;
-		//imagenes();
+		imagenes();
 	}
 
 	public void dibujarse() {
-		
+		contador++;
+		if(contador <= 200) {
+			entorno.dibujarImagen(gatito1, this.x + 16, this.y + 15, 0, 0.2);
+			contador ++;
+		}
+		if(contador >= 200 && contador <= 300) {
+			entorno.dibujarImagen(gatito2, this.x + 16, this.y + 15, 0, 0.2);
+			contador ++;
+		}
+		if(contador >= 300 && contador <= 400) {
+			entorno.dibujarImagen(gatito3, this.x + 16, this.y + 15, 0, 0.2);
+			contador ++;
+		}
+		if(contador >= 400 && contador <= 500) {
+			entorno.dibujarImagen(gatito4, this.x + 16, this.y + 15, 0, 0.2);
+			contador ++;
+		}
+		if(contador >= 500 && contador <= 600) {
+			entorno.dibujarImagen(gatito2, this.x + 16, this.y + 15, 0, 0.2);
+			contador ++;
+		}
+		if(contador >= 600)
+			contador = 0;
 		
 		
 		
@@ -55,18 +82,17 @@ public class Gatito {
 		if(seRompio) {
 			entorno.dibujarImagen(bloqueRoto1, this.xb + 16, this.yb + 15, 0, 2);
 		}
-		//metodo que guarde posiciones?
-	}
+		//metodo que guarde posiciones? */
+	
 	public void imagenes() {
-		this.bloqueR = Herramientas.cargarImagen("bloqueRompible.png");
-		this.bloqueR1 = Herramientas.cargarImagen("bloqueRompible1.png");
-		this.bloqueR2 = Herramientas.cargarImagen("bloqueRompible2.png");
-		this.bloqueR3 = Herramientas.cargarImagen("bloqueRompible3.png");
-		this.bloqueNR = Herramientas.cargarImagen("bloqueNoRompible.png");
-		this.bloqueRoto1 = Herramientas.cargarImagen("bloqueRoto1.png");
-		this.bloqueRoto2 = Herramientas.cargarImagen("bloqueRoto1.png");
-		this.bloqueRoto3 = Herramientas.cargarImagen("bloqueRoto1.png");
-	}*/
+		this.gatito1 = Herramientas.cargarImagen("gatito1.png");
+		this.gatito2 = Herramientas.cargarImagen("gatito2.png");
+		this.gatito3 = Herramientas.cargarImagen("gatito3.png");
+		this.gatito4 = Herramientas.cargarImagen("gatito4.png");
+		this.gatito5 = Herramientas.cargarImagen("gatito5.png");
+		this.gatito6 = Herramientas.cargarImagen("gatito6.png");
+		
+	}
 	
 	//GETTERS Y SETTERS
 

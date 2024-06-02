@@ -14,11 +14,15 @@ public class Proyectil {
 	private boolean inofensivo;
 	private boolean mirandoDerecha;
 	private Personaje padre;
-
+	private int contador;
 	private Entorno entorno;
 	//imagenes
 	private Image proyectilDer;
 	private Image proyectilIzq;
+	private Image proyectilEnem1;
+	private Image proyectilEnem2;
+	private Image proyectilEnem3;
+	private Image proyectilEnem4;
 
 	public Proyectil(int x, int y, boolean inofensivo, boolean derecha, Personaje padre, Entorno entorno) {
 		this.x = x;
@@ -26,7 +30,11 @@ public class Proyectil {
 		this.alto = 10;
 		this.ancho = 20;
 		this.inofensivo = inofensivo;
-		this.velocidad = 7;
+		if(inofensivo == true) {
+			this.velocidad = 7;
+			} else {
+				this.velocidad = 5;
+			}
 		this.mirandoDerecha = derecha;
 		this.padre = padre;
 		this.entorno = entorno;
@@ -34,17 +42,44 @@ public class Proyectil {
 	}
 
 	public void dibujar() {
-		/*if(inofensivo)*/ {
+		if(inofensivo){
 			if(mirandoDerecha)
 				entorno.dibujarImagen(this.proyectilDer, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 2);
 			if(!mirandoDerecha)
 				entorno.dibujarImagen(this.proyectilIzq, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 2);
+		}
+		
+		if(!inofensivo) {
+				contador ++;
+				if(contador <= 20) {
+				entorno.dibujarImagen(this.proyectilEnem1, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+				contador++;
+				}
+				if(contador >= 20 && contador <= 40) {
+					entorno.dibujarImagen(this.proyectilEnem2, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+					contador ++;
+				}
+				if(contador >= 40 && contador <= 60) {
+					entorno.dibujarImagen(this.proyectilEnem3, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+					contador ++;
+				}
+				if(contador >= 60 && contador <= 80) {
+					entorno.dibujarImagen(this.proyectilEnem4, this.x + this.ancho / 2, this.y + this.alto / 2, 0, 0.2);
+					contador ++;
+				}
+				if(contador >= 80)
+					contador = 0;
+						
 		}
 	}
 
 	public void imagenes() {
 		this.proyectilDer = Herramientas.cargarImagen("puerro.der.png");
 		this.proyectilIzq = Herramientas.cargarImagen("puerro.izq.png");
+		this.proyectilEnem1 = Herramientas.cargarImagen("fuego1.png");
+		this.proyectilEnem2 = Herramientas.cargarImagen("fuego2.png");
+		this.proyectilEnem3 = Herramientas.cargarImagen("fuego3.png");
+		this.proyectilEnem4 = Herramientas.cargarImagen("fuego4.png");
 	}
 	public void mover() {
 		if(mirandoDerecha) {
