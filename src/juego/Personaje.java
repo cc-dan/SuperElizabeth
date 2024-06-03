@@ -38,7 +38,6 @@ public class Personaje {
 	private Image enemigo2der;
 	private Image enemigo2izq;
 
-
 	public Personaje(int x, int y, boolean jugable, Entorno entorno) 
 	{
 		this.x = x;
@@ -51,7 +50,7 @@ public class Personaje {
 		this.contador = 0;
 
 		if(!this.esJugador)
-			this.contProyectil = 100;
+			this.contProyectil = 250;
 		else
 			this.contProyectil = 0;	
 
@@ -207,7 +206,7 @@ public class Personaje {
 		return alto;
 	}
 	public boolean getPuedeDisparar() {
-		return this.puedeDisparar;
+		return this.puedeDisparar && this.getContProyectilActual() == 0;
 	}
 	public void setPuedeDisparar(boolean puedeDisparar) {
 		this.puedeDisparar = puedeDisparar;

@@ -95,15 +95,6 @@ public class Proyectil {
 		return y;
 	}
 
-	public void setVelocidad(int velocidad) {
-		this.velocidad = velocidad;
-		if(velocidad > 0) {
-			this.mirandoDerecha = true;
-		} else if(velocidad < 0) {
-			this.mirandoDerecha = false;
-		}
-	}
-
 	public int getAncho() {
 		return ancho;
 	}
