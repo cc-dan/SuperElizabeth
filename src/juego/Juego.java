@@ -111,8 +111,18 @@ public class Juego extends InterfaceJuego
 		// Procesamiento de un instante de tiempo
 		// ...
 
-		if(seGano || sePerdio) {			
-			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
+		if(seGano) {	
+			this.fondo = Herramientas.cargarImagen("fondowin.png");
+			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
+			
+			puntaje();
+			return;
+			
+		}
+		
+		if(sePerdio) {
+			this.fondo = Herramientas.cargarImagen("gameover.png");
+			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
 			puntaje();
 			return;
 		}
@@ -390,14 +400,26 @@ public class Juego extends InterfaceJuego
 	}
 	public void puntaje() {
 
-		if (seGano || sePerdio) {
-			entorno.cambiarFont("times new roman", 50, Color.white);
-			entorno.escribirTexto("PUNTAJE = " + puntaje, 200 , 320);
+		if (seGano) {
+			entorno.cambiarFont("times new roman", 50, Color.BLUE);
+			entorno.escribirTexto("GANASTE!! :D", 200 , 600);
+			
+			entorno.cambiarFont("times new roman", 30, Color.BLUE);
+			entorno.escribirTexto("PUNTAJE = " + puntaje, 200 , 700);
 
+			entorno.cambiarFont("times new roman", 30, Color.BLUE);
+			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 200 , 750);
+		} else if(sePerdio) {
 			entorno.cambiarFont("times new roman", 50, Color.white);
-			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 200 , 370);
+			entorno.escribirTexto("PERDISTE!! :(", 200 , 600);
+			
+			entorno.cambiarFont("times new roman", 30, Color.white);
+			entorno.escribirTexto("PUNTAJE = " + puntaje, 200 , 700);
 
-		}else {
+			entorno.cambiarFont("times new roman", 30, Color.white);
+			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 200 , 750);
+			
+		} else {
 			entorno.cambiarFont("times new roman", 20, Color.white);
 			entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
 

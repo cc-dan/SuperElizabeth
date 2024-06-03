@@ -87,15 +87,15 @@ public class Personaje {
 				}		
 			} else { // dibujo enemigo
 				contador++;
-				if(contador <= 10) {
-					entorno.dibujarImagen(this.enemigo1der, this.x + 15, this.y + 25, 0, 0.15);
+				if(contador <= 30) {
+					entorno.dibujarImagen(this.enemigo1der, this.x + 15, this.y + 20, 0, 0.15);
 					contador ++;
 				}
-				if(contador >= 10 && contador <= 20) {
-					entorno.dibujarImagen(this.enemigo2der, this.x + 15, this.y + 25, 0, 0.15);
+				if(contador >= 30 && contador <= 60) {
+					entorno.dibujarImagen(this.enemigo2der, this.x + 15, this.y + 20, 0, 0.15);
 					contador ++;
 				}
-				if(contador >= 20)
+				if(contador >= 60)
 					contador = 0;				
 			}
 		}	
@@ -126,20 +126,17 @@ public class Personaje {
 
 				}
 			} else { // dibujo enemigo
-				if(saltando) {
-					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 25, 0, 0.15);
-				}
 				contador++;
-				if(contador <= 10) {
-					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 25, 0, 0.15);
+				if(contador <= 30) {
+					entorno.dibujarImagen(this.enemigo1izq, this.x + 15, this.y + 20, 0, 0.15);
 					contador ++;
 				}
-				if(contador >= 10 && contador <= 20) {
-					entorno.dibujarImagen(this.enemigo2izq, this.x + 15, this.y + 25, 0, 0.15);
+				if(contador >= 30 && contador <= 60) {
+					entorno.dibujarImagen(this.enemigo2izq, this.x + 15, this.y + 20, 0, 0.15);
 					contador ++;
 
 				}
-				if(contador >= 20)
+				if(contador >= 60)
 					contador = 0;
 			}
 		}
