@@ -24,7 +24,6 @@ public class Juego extends InterfaceJuego
 	int velocidadEnemigos = 2;
 	float gravedad = 0.1f;
 	float posLava;
-	int posLavaInicial;
 	float velocidadLava = 0.1f;
 	boolean sePerdio;
 	boolean seGano;
@@ -45,13 +44,11 @@ public class Juego extends InterfaceJuego
 	int cantidadEnemigos = enemigosPorPiso * (pisos - 1);
 	Personaje enemigos[] = new Personaje[cantidadEnemigos];
 
-	Juego()
+	void iniciarJuego()
 	{
-		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 1024, 768);
-
-		// Inicializar lo que haga falta para el juego
-		// ...
+		if (seGano || sePerdio) // reinicio de vidas
+			vidas = 3;
+		seGano = sePerdio = false;
 		this.jugador = new Personaje(entorno.ancho() / 2, entorno.alto() - 96, true, entorno);
 
 		this.fondo = Herramientas.cargarImagen("fondo2.png");
@@ -82,8 +79,7 @@ public class Juego extends InterfaceJuego
 		bloques[cantidadDeBloques] = new Bloque(0 - anchoBloque, 0, anchoBloque, entorno.alto() - distanciaEntrePisos, false, entorno);
 		bloques[cantidadDeBloques + 1] = new Bloque(entorno.ancho(), 0, anchoBloque, entorno.alto() - distanciaEntrePisos, false, entorno);
 
-		posLavaInicial = this.entorno.alto() + 8;
-		posLava = posLavaInicial;
+		posLava = this.entorno.alto() + 8;
 		this.lava = new Bloque(0, (int)posLava, entorno.ancho(), entorno.alto(), false, entorno);
 		
 		this.gatito = new Gatito(entorno.ancho() / 2, 20, anchoBloque, altoBloque, entorno);
@@ -101,7 +97,17 @@ public class Juego extends InterfaceJuego
 				e.setVelocidadHorizontal((x % 2 == 0)? -velocidadEnemigos : velocidadEnemigos);
 				enemigos[indiceEnemigos++] = e;
 			}
+	}
+	
+	Juego()
+	{
+		// Inicializa el objeto entorno
+		this.entorno = new Entorno(this, "Super Elizabeth Sisters", 1024, 768);
 
+		// Inicializar lo que haga falta para el juego
+		// ...
+		iniciarJuego();
+		
 		// Inicia el juego!
 		this.entorno.iniciar();
 	}
@@ -116,23 +122,28 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-
-		if (seGano) 
-		{	
-			this.fondo = Herramientas.cargarImagen("fondowin.png");
-			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
-			
-			dibujarInterfaz();
-			return;
-		}
-		
-		if (sePerdio) 
+		if (seGano || sePerdio)
 		{
-			this.fondo = Herramientas.cargarImagen("gameover.png");
-			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
+			if (entorno.sePresiono(entorno.TECLA_ENTER))
+				iniciarJuego();
 			
-			dibujarInterfaz();
-			return;
+			if (seGano) 
+			{	
+				Image fondo = Herramientas.cargarImagen("fondowin.png");
+				entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
+				
+				dibujarInterfaz();
+				return;
+			}
+			
+			if (sePerdio) 
+			{
+				Image fondo = Herramientas.cargarImagen("gameover.png");
+				entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
+				
+				dibujarInterfaz();
+				return;
+			}
 		}
 
 		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
@@ -431,26 +442,7 @@ public class Juego extends InterfaceJuego
 		if (vidas <= 0)
 			sePerdio = true;
 		else
-		{
-			// eliminamos enemigos en el primer piso
-			for (int i = 0; i < enemigos.length; i++)
-			{
-				Personaje e = enemigos[i];
-				if (e == null) continue;
-				if (estaEnPiso(pisos - 1, e))
-					matarEnemigo(i);
-			}
-			//eliminamos proyectiles
-			for (int i = 0; i < proyectiles.length; i++)
-				proyectiles[i] = null;
-			
-			// devolver lava al comienzo
-			posLava = posLavaInicial;
-			lava.setY((int)posLava);
-			
-			jugador.setX(entorno.ancho() / 2);
-			jugador.setY(entorno.alto() - 96);
-		}
+			iniciarJuego();
 	}
 	public void ganar() {		
 		seGano = true;		
