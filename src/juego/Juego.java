@@ -18,14 +18,20 @@ public class Juego extends InterfaceJuego
 	Gatito gatito;
 	Proyectil proyectiles[];
 	Bloque bloques[];
+	Bloque lava;
+	Image lavaImg = Herramientas.cargarImagen("lava.png");
 	int velocidadJugador = 5;
 	int velocidadEnemigos = 2;
 	float gravedad = 0.1f;
+	float posLava;
+	int posLavaInicial;
+	float velocidadLava = 0.1f;
 	boolean sePerdio;
 	boolean seGano;
 	private Image fondo;
 	int puntaje = 0;
 	int enemEliminados = 0;	
+	int vidas = 3;
 	
 	int anchoBloque = 32;
 	int altoBloque = 32;
@@ -76,6 +82,10 @@ public class Juego extends InterfaceJuego
 		bloques[cantidadDeBloques] = new Bloque(0 - anchoBloque, 0, anchoBloque, entorno.alto() - distanciaEntrePisos, false, entorno);
 		bloques[cantidadDeBloques + 1] = new Bloque(entorno.ancho(), 0, anchoBloque, entorno.alto() - distanciaEntrePisos, false, entorno);
 
+		posLavaInicial = this.entorno.alto() + 8;
+		posLava = posLavaInicial;
+		this.lava = new Bloque(0, (int)posLava, entorno.ancho(), entorno.alto(), false, entorno);
+		
 		this.gatito = new Gatito(entorno.ancho() / 2, 20, anchoBloque, altoBloque, entorno);
 
 		int margen = enemigos.length / 2; // Los enemigos pueden morir pero sus proyectiles siguen existiendo, por lo cual se puede llenar el array al morir un enemigo tras disparar, reaparecer y disparar otra vez.
@@ -112,7 +122,7 @@ public class Juego extends InterfaceJuego
 			this.fondo = Herramientas.cargarImagen("fondowin.png");
 			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
 			
-			mostrarPuntaje();
+			dibujarInterfaz();
 			return;
 		}
 		
@@ -121,13 +131,13 @@ public class Juego extends InterfaceJuego
 			this.fondo = Herramientas.cargarImagen("gameover.png");
 			entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2+125, 0, 1);
 			
-			mostrarPuntaje();
+			dibujarInterfaz();
 			return;
 		}
 
 		entorno.dibujarImagen(fondo, entorno.ancho()/2, entorno.alto()/2 -90, 0, 1);
 
-		mostrarPuntaje();
+		dibujarInterfaz();
 
 		// JUGADOR
 		if (entorno.estaPresionada(entorno.TECLA_DERECHA))
@@ -152,7 +162,7 @@ public class Juego extends InterfaceJuego
 		}
 		
 		// Disparos
-		if (jugador.getPuedeDisparar() && entorno.sePresiono('c'))
+		if (!jugador.estaSaltando() && jugador.getPuedeDisparar() && entorno.sePresiono('c'))
 			agregarProyectil(jugador.disparar());
 		
 		jugador.dibujarse();
@@ -167,6 +177,18 @@ public class Juego extends InterfaceJuego
 					jugador.getAlto()))
 		{
 			ganar();
+		}
+		
+		if(colision(lava.getX(), 
+					lava.getY(), 
+					lava.getAncho(),
+					lava.getAlto(),
+					jugador.getX(),
+					jugador.getY(),
+					jugador.getAncho(),
+					jugador.getAlto()))
+		{
+			perder();
 		}
 			
 		// ENEMIGOS
@@ -213,7 +235,7 @@ public class Juego extends InterfaceJuego
 			
 			enemigo.dibujarse();
 
-			// mMuerte de los enemigos
+			// Muerte de los enemigos
 			if (enemigo.getX() < 0 - enemigo.getAncho() || enemigo.getX() > entorno.ancho())
 			{
 				matarEnemigo(i);
@@ -292,7 +314,13 @@ public class Juego extends InterfaceJuego
 
 			bloque.dibujarse();
 		}
+		
 		gatito.dibujarse();
+		
+		// Lava
+		entorno.dibujarImagen(lavaImg, lava.getX() + lava.getAncho() / 2, lava.getY() + lava.getAlto() / 2, 0, 1);
+		posLava -= velocidadLava;
+		lava.setY((int)posLava);
 	}
 
 	@SuppressWarnings("unused")
@@ -398,14 +426,36 @@ public class Juego extends InterfaceJuego
 		proyectiles[i] = null;
 	}
 	public void perder() {
-
-		sePerdio = true;
+		vidas--;
+		System.out.println("se resta vida");
+		if (vidas <= 0)
+			sePerdio = true;
+		else
+		{
+			// eliminamos enemigos en el primer piso
+			for (int i = 0; i < enemigos.length; i++)
+			{
+				Personaje e = enemigos[i];
+				if (e == null) continue;
+				if (estaEnPiso(pisos - 1, e))
+					matarEnemigo(i);
+			}
+			//eliminamos proyectiles
+			for (int i = 0; i < proyectiles.length; i++)
+				proyectiles[i] = null;
+			
+			// devolver lava al comienzo
+			posLava = posLavaInicial;
+			lava.setY((int)posLava);
+			
+			jugador.setX(entorno.ancho() / 2);
+			jugador.setY(entorno.alto() - 96);
+		}
 	}
 	public void ganar() {		
 		seGano = true;		
 	}
-	public void mostrarPuntaje() {
-
+	public void dibujarInterfaz() {
 		if (seGano) {
 			entorno.cambiarFont("times new roman", 50, Color.BLUE);
 			entorno.escribirTexto("GANASTE!! :D", 200 , 600);
@@ -427,10 +477,13 @@ public class Juego extends InterfaceJuego
 			
 		} else {
 			entorno.cambiarFont("times new roman", 20, Color.white);
+			entorno.escribirTexto("VIDAS = " + vidas, 5, 680);
+			
 			entorno.escribirTexto("PUNTAJE = " + puntaje, 5 , 700);
 
 			entorno.cambiarFont("times new roman", 20, Color.white);
-			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);			
+			entorno.escribirTexto("ENEMIGOS ELIMINADOS = " + enemEliminados, 5 , 720);
+			
 		}
 	}
 
@@ -473,7 +526,19 @@ public class Juego extends InterfaceJuego
 					if (enemigos[x] == null)
 					{
 						boolean mirandoDerecha = new Random().nextBoolean();
-						Personaje e = new Personaje(mirandoDerecha? 0 : this.entorno.ancho() - 32, distanciaEntrePisos * i + distanciaEntrePisos + 32, false, entorno);
+						
+						int entradaIzquierda = 32;
+						int entradaDerecha = entorno.ancho() - 32;
+						
+						int posX = mirandoDerecha? entradaDerecha : entradaIzquierda;
+						
+						// Si está en un rango de peligro, sobreescribimos la posición del enemigo para que no lo sorprenda.
+						if (jugador.getX() >= entorno.ancho() - 400)
+							posX = entradaIzquierda;
+						else if (jugador.getX() <= 400)
+							posX = entradaDerecha;
+						
+						Personaje e = new Personaje(posX, distanciaEntrePisos * i + distanciaEntrePisos + 32, false, entorno);
 						e.setY(e.getY() - e.getAlto() * 2);
 						e.setVelocidadHorizontal(mirandoDerecha? velocidadEnemigos : -velocidadEnemigos);
 						enemigos[x] = e;
@@ -486,6 +551,6 @@ public class Juego extends InterfaceJuego
 	{
 		int techo = nivel * distanciaEntrePisos;
 		int piso = techo + distanciaEntrePisos;
-		return (p.getY() > techo && p.getY() < piso);
+		return (p.getY() > techo && p.getY() - p.getAlto() < piso);
 	}
 }

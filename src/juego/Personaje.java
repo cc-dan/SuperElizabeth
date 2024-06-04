@@ -50,7 +50,7 @@ public class Personaje {
 		this.contador = 0;
 
 		if(!this.esJugador)
-			this.contProyectil = 250;
+			this.contProyectil = 180;
 		else
 			this.contProyectil = 0;	
 

@@ -75,6 +75,11 @@ public class Bloque {
 		return y;
 	}
 
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+	
 	public int getAncho() {
 		return ancho;
 	}
