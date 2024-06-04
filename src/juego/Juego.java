@@ -462,6 +462,9 @@ public class Juego extends InterfaceJuego
 			entorno.escribirTexto("PERDISTE!! :(", 200 , 600);
 			
 			entorno.cambiarFont("times new roman", 30, Color.white);
+			entorno.escribirTexto("PRESIONA 'ENTER' PARA REINICIAR ", 200 , 650);
+			
+			entorno.cambiarFont("times new roman", 30, Color.white);
 			entorno.escribirTexto("PUNTAJE = " + puntaje, 200 , 700);
 
 			entorno.cambiarFont("times new roman", 30, Color.white);
